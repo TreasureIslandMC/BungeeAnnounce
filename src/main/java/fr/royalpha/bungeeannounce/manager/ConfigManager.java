@@ -122,7 +122,7 @@ public class ConfigManager {
 			}
 		}
 		if (i > 0)
-			getLogger().log(Level.INFO, Integer.toString(i) + " scheduled announcement" + (i > 1 ? "s" : "") + " " + (i > 1 ? "were" : "was") + " correctly loaded.");
+			getLogger().log(Level.INFO, i + " scheduled announcement" + (i > 1 ? "s" : "") + " " + (i > 1 ? "were" : "was") + " correctly loaded.");
 		return output;
 	}
 	
@@ -146,7 +146,7 @@ public class ConfigManager {
 		}
 		
 		if (i > 0) {
-			getLogger().log(Level.INFO, Integer.toString(i) + " automatic player join announcement" + (i > 1 ? "s" : "") + " " + (i > 1 ? "were" : "was") + " correctly loaded.");
+			getLogger().log(Level.INFO, i + " automatic player join announcement" + (i > 1 ? "s" : "") + " " + (i > 1 ? "were" : "was") + " correctly loaded.");
 		}
 		
 		// LEFT ANNOUNCEMENTS
@@ -158,7 +158,7 @@ public class ConfigManager {
 		}
 
 		if (i > 0) {
-			getLogger().log(Level.INFO, Integer.toString(i) + " automatic player left announcement" + (i > 1 ? "s" : "") + " " + (i > 1 ? "were" : "was") + " correctly loaded.");
+			getLogger().log(Level.INFO, i + " automatic player left announcement" + (i > 1 ? "s" : "") + " " + (i > 1 ? "were" : "was") + " correctly loaded.");
 		}
 		
 		return output;
