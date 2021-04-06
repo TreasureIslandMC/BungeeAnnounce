@@ -219,12 +219,12 @@ public class ConfigManager {
 		PM_SENDER_EQUALS_RECEIVER("private-message-sender-equals-receiver", String.class, "&7Are you schizophrenic ? :O"),
 		REPLY_INFO("reply-info", String.class, "&7Use &a/reply &7to respond to &b%SENDER%");
 	
-		private String configField;
-		private Class<?> type;
-		private Object def;
+		private final String configField;
+		private final Class<?> type;
+		private final Object def;
 		private Object value;
 		
-		private Field(String configField, Class<?> type, Object def) {
+		Field(String configField, Class<?> type, Object def) {
 			this.configField = configField;
 			this.type = type;
 			this.def = def;
