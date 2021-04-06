@@ -33,13 +33,11 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	private static Logger logSystem;
 	
 	private Boolean update;
-	private final Boolean localhost;
 	private ConfigManager configManager;
 	private List<ScheduledAnnouncement> scheduledAnnouncement;
 	
 	public BungeeAnnouncePlugin() {
 		this.update = false;
-		this.localhost = false;
 		this.scheduledAnnouncement = new ArrayList<>();
 	}
 
