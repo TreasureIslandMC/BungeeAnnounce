@@ -30,12 +30,12 @@ public enum AnnouncementManager {
 	SUBTITLE("subtitle", ConfigManager.Field.SUBTITLE_PREFIX, new SubtitleAction(), new SendSubtitleCommand()), 
 	TITLE("title", ConfigManager.Field.TITLE_PREFIX, new TitleAction(), new SendTitleCommand());
 
-	private String rawType;
-	private ConfigManager.Field prefix;
-	private AnnounceAction action;
-	private Command command;
+	private final String rawType;
+	private final ConfigManager.Field prefix;
+	private final AnnounceAction action;
+	private final Command command;
 
-	private AnnouncementManager(String rawType, ConfigManager.Field prefix, AnnounceAction action, Command command) {
+	AnnouncementManager(String rawType, ConfigManager.Field prefix, AnnounceAction action, Command command) {
 		this.rawType = rawType;
 		this.prefix = prefix;
 		this.action = action;
