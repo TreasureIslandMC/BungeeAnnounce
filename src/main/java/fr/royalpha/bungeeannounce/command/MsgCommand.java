@@ -22,7 +22,7 @@ public class MsgCommand extends Command {
 		super("bungee:msg", "", commands);
 		this.commands = commands;
 		this.msgManager = new MsgManager();
-		plugin.getProxy().getPluginManager().registerCommand(plugin, new ReplyCommand(plugin, this.msgManager));
+		plugin.getProxy().getPluginManager().registerCommand(plugin, new ReplyCommand(this.msgManager));
 	}
 
 	public void execute(CommandSender sender, String[] args) {
@@ -38,7 +38,7 @@ public class MsgCommand extends Command {
 				StringBuilder msgBuilder = new StringBuilder();
 				for (int i = 1; i < args.length; i++)
 					msgBuilder.append(args[i]).append(" ");
-				if (msgBuilder.toString().trim() == "")
+				if (msgBuilder.toString().trim().equals(""))
 					return;
 				this.msgManager.message(player, to, msgBuilder.toString());
 			} else {

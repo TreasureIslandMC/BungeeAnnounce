@@ -20,7 +20,7 @@ public class BAReloadCommand extends Command {
 	}
 
 	public void execute(CommandSender sender, String[] args) {
-		reloadAnnouncement("\u00a77[" + sender.getName() + "]: \u00a7aReloading BungeeAnnounce plugin ...", sender);
+		reloadAnnouncement("\u00a77[" + sender.getName() + "]: \u00a7aReloading BungeeAnnounce plugin ...");
 		int tasks = plugin.getProxy().getScheduler().cancel(plugin);
 		sender.sendMessage(new TextComponent(ChatColor.DARK_GRAY + "> " + ChatColor.RED + tasks + " task" + (tasks > 1 ? "s" : "") +" were cancelled."));
 		this.plugin.getScheduledAnnouncement().clear();
@@ -30,7 +30,7 @@ public class BAReloadCommand extends Command {
 		sender.sendMessage(new TextComponent(ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "BungeeAnnounce plugin is now load."));
 	}
 
-	public void reloadAnnouncement(String announcement, CommandSender sender) {
+	public void reloadAnnouncement(String announcement) {
 		this.plugin.getLogger().info(ChatColor.stripColor(announcement));
 	}
 }

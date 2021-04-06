@@ -16,7 +16,7 @@ public class ReplyCommand extends Command {
 
 	private MsgManager msgManager;
 
-	public ReplyCommand(BungeeAnnouncePlugin plugin, MsgManager msgManager) {
+	public ReplyCommand(MsgManager msgManager) {
 		super("reply", "", "r", "bungee:reply");
 		this.msgManager = msgManager;
 	}
@@ -35,9 +35,8 @@ public class ReplyCommand extends Command {
 			if (this.msgManager.isReplierOnline(player)) {
 				ProxiedPlayer to = this.msgManager.getReplier(player);
 				StringBuilder msgBuilder = new StringBuilder();
-				for (int i = 0; i < args.length; i++)
-					msgBuilder.append(args[i]).append(" ");
-				if (msgBuilder.toString().trim() == "")
+				for (final String arg : args) msgBuilder.append(arg).append(" ");
+				if (msgBuilder.toString().trim().equals(""))
 					return;
 				this.msgManager.message(player, to, msgBuilder.toString());
 			} else {
