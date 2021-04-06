@@ -15,7 +15,7 @@ import net.md_5.bungee.api.connection.Server;
 public class PlayerAnnouncer {
 
 	public static List<PlayerAnnouncer> playerAnnouncers = new ArrayList<>();
-	
+
 	private ConnectionType type;
 	private AnnouncementManager announcement;
 	private String message;
