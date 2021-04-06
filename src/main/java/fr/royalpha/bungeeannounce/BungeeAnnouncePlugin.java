@@ -130,14 +130,10 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 			// Do nothing
 		}
 	}
-	private List<ProxiedPlayer> onlinePlayers = new ArrayList<>();
 
 	@EventHandler
 	public void onConnect(final net.md_5.bungee.api.event.ServerConnectedEvent event) {
 		final ProxiedPlayer player = event.getPlayer();
-		if (onlinePlayers.contains(player))
-			return;
-		onlinePlayers.add(player);
 		List<PlayerAnnouncer> autoPlayerAnnouncements = PlayerAnnouncer.getAnnouncementList(player, event.getServer(), ConnectionType.CONNECT_SERVER);
 		if (!autoPlayerAnnouncements.isEmpty()) {
 			for (PlayerAnnouncer playerAnnouncer : autoPlayerAnnouncements)
@@ -161,8 +157,6 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	@EventHandler
 	public void onDisconnect(final net.md_5.bungee.api.event.PlayerDisconnectEvent event) {
 		final ProxiedPlayer player = event.getPlayer();
-		if (onlinePlayers.contains(player))
-			onlinePlayers.remove(player);
 		List<PlayerAnnouncer> autoPlayerAnnouncements = PlayerAnnouncer.getAnnouncementList(player, event.getPlayer().getServer(), ConnectionType.LEAVE_PROXY);
 		if (!autoPlayerAnnouncements.isEmpty()) {
 			for (PlayerAnnouncer playerAnnouncer : autoPlayerAnnouncements)
