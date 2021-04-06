@@ -6,6 +6,6 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 /**
  * @author Royalpha
  */
-public abstract interface AnnounceAction {
-	public abstract void onAction(ProxiedPlayer player, TextComponent message, Integer... optionalTitleArgs);
+public interface AnnounceAction {
+	void onAction(ProxiedPlayer player, TextComponent message, Integer... optionalTitleArgs);
 }
