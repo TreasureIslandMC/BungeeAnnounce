@@ -15,44 +15,38 @@ public enum Executor {
 	RUN_COMMAND("run_command", new RunCommandExecutor()),
 	OPEN_FILE("open_file", new OpenFileExecutor()),
 	SUGGEST_COMMAND("suggest_command", new SuggestCommandExecutor()),
-	
+
 	SHOW_TEXT("show_text", new ShowTextExecutor());
-	
+
 	private String s;
 	private ExecutorAction action;
-	
-	private Executor(String s, ExecutorAction action)
-	{
+
+	Executor(String s, ExecutorAction action) {
 		this.s = s;
 		this.action = action;
 	}
-	
-	public String getString()
-	{
+
+	public String getString() {
 		return this.s;
 	}
-	
-	public ExecutorAction getEA()
-	{
+
+	public ExecutorAction getEA() {
 		return this.action;
 	}
-	
-	public static abstract interface ExecutorAction {
+
+	public interface ExecutorAction {
 		TextComponent onParse(TextComponent comp, String value);
 	}
-	
-	public static Executor getType(String s)
-	{
-		for (Executor t : values())
-		{
-			if (t.getString().equals(s))
-			{
+
+	public static Executor getType(String s) {
+		for (Executor t : values()) {
+			if (t.getString().equals(s)) {
 				return t;
 			}
 		}
 		return null;
 	}
-	
+
 	public static class OpenURLExecutor implements ExecutorAction {
 
 		@Override
@@ -61,7 +55,7 @@ public enum Executor {
 			return comp;
 		}
 	}
-	
+
 	public static class ChangePageExecutor implements ExecutorAction {
 
 		@Override
@@ -70,7 +64,7 @@ public enum Executor {
 			return comp;
 		}
 	}
-	
+
 	public static class RunCommandExecutor implements ExecutorAction {
 
 		@Override
@@ -79,7 +73,7 @@ public enum Executor {
 			return comp;
 		}
 	}
-	
+
 	public static class OpenFileExecutor implements ExecutorAction {
 
 		@Override
@@ -88,7 +82,7 @@ public enum Executor {
 			return comp;
 		}
 	}
-	
+
 	public static class SuggestCommandExecutor implements ExecutorAction {
 
 		@Override
@@ -97,7 +91,7 @@ public enum Executor {
 			return comp;
 		}
 	}
-	
+
 	public static class ShowTextExecutor implements ExecutorAction {
 
 		@Override
