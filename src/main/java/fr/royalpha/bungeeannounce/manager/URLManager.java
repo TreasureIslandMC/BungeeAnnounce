@@ -95,7 +95,7 @@ public class URLManager {
 	}
 
 	public static Boolean checkVersion(String version, Boolean localhost, Link URLPath) {
-		Boolean isUpdated = true;
+		boolean isUpdated = true;
 		String content;
 		try {
 			content = new URLManager(URLPath.getURL() + "/version.txt", localhost).read();
