@@ -43,52 +43,20 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 		this.scheduledAnnouncement = new ArrayList<>();
 	}
 
+
 	@Override
 	public void onEnable() {
 		instance = this;
 		
-		/** Load config file **/
-		this.configManager = new ConfigManager(this);
-		
-		/** Initialize the log system **/
-		logSystem = new Logger(this);
-		
-		/** Load config content **/
-		this.scheduledAnnouncement = this.configManager.loadScheduledAnnouncement();
-		this.configManager.loadAutoPlayerAnnouncement();
-		this.configManager.loadChannels();
-		
-		/** Register commands **/
-		PluginManager pM = getProxy().getPluginManager();
-		for (AnnouncementManager aM : AnnouncementManager.values())
-			pM.registerCommand(this, aM.getCommandClass());
-		pM.registerCommand(this, new ForceBroadcastCommand(this));
-		pM.registerCommand(this, new BAReloadCommand(this));
-		pM.registerCommand(this, new ColorcodeCommand());
-		if (ConfigManager.Field.ENABLE_PRIVATE_MESSAGING.getBoolean()) {
-			String cmmds = ConfigManager.Field.COMMAND_FOR_PRIVATE_MESSAGING.getString().replaceAll(" ,", ",").replaceAll(", ", ",");
-			pM.registerCommand(this, new MsgCommand(this, cmmds.split(",")));
-		}
-		pM.registerListener(this, this);
-		
-		/** Check for new Updates **/
-		getProxy().getScheduler().runAsync(this, new Runnable() {
-			public void run() {
-				if (!URLManager.checkVersion(getDescription().getVersion(), false, URLManager.Link.GITHUB_PATH)) {
-					getLogger().info("A new version more efficient of the plugin is available. It will be automatically updated when the server will switch off.");
-					update = true;
-				} else {
-					getLogger().info("Plugin is up-to-date.");
-				}
-			}
-		});
+		loadConfigFile();
+		initializeLogSystem();
+		loadConfigContent();
 
-		try {
-			Class.forName("com.google.gson.JsonElement");
-			Metrics metrics = new Metrics(this, 8662);
-		} catch( ClassNotFoundException e ) {
-			// Do nothing
-		}
+		registerCommands();
+		registerListeners();
+		
+		checkForUpdates();
+		initializeMetrics();
 	}
 	
 	@Override
@@ -112,7 +80,56 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 		if (ConfigManager.Field.ENABLE_PRIVATE_MESSAGING.getBoolean())
 			getProxy().getPluginManager().registerCommand(this, new MsgCommand(this, ConfigManager.Field.COMMAND_FOR_PRIVATE_MESSAGING.getString()));
 	}
+	private void loadConfigFile() {
+		this.configManager = new ConfigManager(this);
+	}
+	private void initializeLogSystem() {
+		logSystem = new Logger(this);
+	}
+	private void loadConfigContent() {
+		this.scheduledAnnouncement = this.configManager.loadScheduledAnnouncement();
+		this.configManager.loadAutoPlayerAnnouncement();
+		this.configManager.loadChannels();
+	}
 
+	private void registerCommands(){
+		PluginManager pM = getProxy().getPluginManager();
+		for (AnnouncementManager aM : AnnouncementManager.values())
+			pM.registerCommand(this, aM.getCommandClass());
+		pM.registerCommand(this, new ForceBroadcastCommand(this));
+		pM.registerCommand(this, new BAReloadCommand(this));
+		pM.registerCommand(this, new ColorcodeCommand());
+		if (ConfigManager.Field.ENABLE_PRIVATE_MESSAGING.getBoolean()) {
+			String cmmds = ConfigManager.Field.COMMAND_FOR_PRIVATE_MESSAGING.getString().replaceAll(" ,", ",").replaceAll(", ", ",");
+			pM.registerCommand(this, new MsgCommand(this, cmmds.split(",")));
+		}
+	}
+
+	private void registerListeners() {
+		getProxy().getPluginManager().registerListener(this, this);
+	}
+
+
+	private void checkForUpdates(){
+		getProxy().getScheduler().runAsync(this, () -> {
+			if (!URLManager.checkVersion(getDescription().getVersion(), false, URLManager.Link.GITHUB_PATH)) {
+				getLogger().info("A new version more efficient of the plugin is available. It will be automatically updated when the server will switch off.");
+				update = true;
+			} else {
+				getLogger().info("Plugin is up-to-date.");
+			}
+		});
+
+	}
+
+	private void initializeMetrics() {
+		try {
+			Class.forName("com.google.gson.JsonElement");
+			Metrics metrics = new Metrics(this, 8662);
+		} catch( ClassNotFoundException e ) {
+			// Do nothing
+		}
+	}
 	private List<ProxiedPlayer> onlinePlayers = new ArrayList<>();
 
 	@EventHandler
@@ -124,11 +141,7 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 		List<PlayerAnnouncer> autoPlayerAnnouncements = PlayerAnnouncer.getAnnouncementList(player, event.getServer(), ConnectionType.CONNECT_SERVER);
 		if (!autoPlayerAnnouncements.isEmpty()) {
 			for (PlayerAnnouncer playerAnnouncer : autoPlayerAnnouncements)
-				getProxy().getScheduler().schedule(this, new Runnable() {
-					public void run() {
-						AnnouncementManager.sendToServer(playerAnnouncer.getAnnouncement(), getProxy().getConsole(), player, playerAnnouncer.getMessage(), playerAnnouncer.getBroadcastServers(), false, "", playerAnnouncer.getOptionalTitleArgs());
-					}
-				}, 500, TimeUnit.MILLISECONDS);
+				getProxy().getScheduler().schedule(this, () -> AnnouncementManager.sendToServer(playerAnnouncer.getAnnouncement(), getProxy().getConsole(), player, playerAnnouncer.getMessage(), playerAnnouncer.getBroadcastServers(), false, "", playerAnnouncer.getOptionalTitleArgs()), 500, TimeUnit.MILLISECONDS);
 		}
 	}
 	
@@ -153,11 +166,7 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 		List<PlayerAnnouncer> autoPlayerAnnouncements = PlayerAnnouncer.getAnnouncementList(player, event.getPlayer().getServer(), ConnectionType.LEAVE_PROXY);
 		if (!autoPlayerAnnouncements.isEmpty()) {
 			for (PlayerAnnouncer playerAnnouncer : autoPlayerAnnouncements)
-				getProxy().getScheduler().schedule(this, new Runnable() {
-					public void run() {
-						AnnouncementManager.sendToServer(playerAnnouncer.getAnnouncement(), getProxy().getConsole(), player, playerAnnouncer.getMessage(), playerAnnouncer.getBroadcastServers(), false, "", playerAnnouncer.getOptionalTitleArgs());
-					}
-				}, 500, TimeUnit.MILLISECONDS);
+				getProxy().getScheduler().schedule(this, () -> AnnouncementManager.sendToServer(playerAnnouncer.getAnnouncement(), getProxy().getConsole(), player, playerAnnouncer.getMessage(), playerAnnouncer.getBroadcastServers(), false, "", playerAnnouncer.getOptionalTitleArgs()), 500, TimeUnit.MILLISECONDS);
 		}
 	}
 	
