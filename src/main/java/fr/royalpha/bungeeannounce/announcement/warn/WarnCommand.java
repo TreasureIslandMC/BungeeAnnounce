@@ -22,8 +22,8 @@ public class WarnCommand extends Command {
 			return;
 		}
 		StringBuilder msgBuilder = new StringBuilder();
-		for (int i = 0; i < args.length; i++) {
-			msgBuilder.append(args[i]).append(" ");
+		for (final String arg : args) {
+			msgBuilder.append(arg).append(" ");
 		}
 		AnnouncementManager.sendToServer(AnnouncementManager.WARN, sender instanceof ProxiedPlayer ? (ProxiedPlayer) sender : null, msgBuilder.toString().trim(), null, true, "");
 	}
