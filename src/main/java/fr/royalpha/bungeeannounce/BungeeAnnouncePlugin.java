@@ -18,7 +18,6 @@ import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer.ConnectionType;
 import fr.royalpha.bungeeannounce.manager.AnnouncementManager;
 import fr.royalpha.bungeeannounce.manager.ChannelManager;
 import fr.royalpha.bungeeannounce.manager.ConfigManager;
-import fr.royalpha.bungeeannounce.manager.URLManager;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
@@ -60,9 +59,9 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 
 		initializeMetrics();
 	}
+
 	
-	
-	/**
+	/*
 	 * To do better, the load method should be executed in the onEnable to avoid repeating lines of code. However, since it is only used for the BAReload command, I decided to separate it from the onEnable.
 	 */
 	//^ Nah man, please don't. There is an onLoad method for this already....
