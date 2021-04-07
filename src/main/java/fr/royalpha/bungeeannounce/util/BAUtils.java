@@ -2,6 +2,7 @@ package fr.royalpha.bungeeannounce.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.regex.Matcher;
 
 import fr.royalpha.bungeeannounce.BungeeAnnouncePlugin;
 import fr.royalpha.bungeeannounce.handler.Executor;
@@ -11,6 +12,7 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Royalpha

@@ -53,7 +53,7 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 		registerCommands();
 		registerListeners();
 		
-		checkForUpdates();
+		//checkForUpdates();
 		initializeMetrics();
 	}
 	
