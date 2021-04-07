@@ -35,13 +35,11 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	private static BungeeAnnouncePlugin instance;
 	private static Logger logSystem;
 	
-	private Boolean update;
 	private ConfigManager configManager;
 	private List<ScheduledAnnouncement> scheduledAnnouncement;
 	private MsgManager msgManager;
 	
 	public BungeeAnnouncePlugin() {
-		this.update = false;
 		this.scheduledAnnouncement = new ArrayList<>();
 	}
 
@@ -71,19 +69,20 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 			URLManager.update(this, URLManager.getLatestVersion(), false, URLManager.Link.GITHUB_PATH);
 		}
 	}
+
+
+
 	
 	/**
 	 * To do better, the load method should be executed in the onEnable to avoid repeating lines of code. However, since it is only used for the BAReload command, I decided to separate it from the onEnable.
 	 */
+	//^ Nah man, please don't. There is an onLoad method for this already....
 	public void load() {
 		this.configManager = new ConfigManager(this);
 		logSystem = new Logger(this);
 		
 		this.scheduledAnnouncement = this.configManager.loadScheduledAnnouncement();
 		this.configManager.loadAutoPlayerAnnouncement();
-		
-		if (ConfigManager.Field.ENABLE_PRIVATE_MESSAGING.getBoolean())
-			getProxy().getPluginManager().registerCommand(this, new MessageCommand(this, ConfigManager.Field.COMMAND_FOR_PRIVATE_MESSAGING.getString()));
 	}
 	private void loadConfigFile() {
 		this.configManager = new ConfigManager(this);
@@ -113,26 +112,8 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 		getProxy().getPluginManager().registerListener(this, this);
 	}
 
-
-	private void checkForUpdates(){
-		getProxy().getScheduler().runAsync(this, () -> {
-			if (!URLManager.checkVersion(getDescription().getVersion(), false, URLManager.Link.GITHUB_PATH)) {
-				getLogger().info("A new version more efficient of the plugin is available. It will be automatically updated when the server will switch off.");
-				update = true;
-			} else {
-				getLogger().info("Plugin is up-to-date.");
-			}
-		});
-
-	}
-
 	private void initializeMetrics() {
-		try {
-			Class.forName("com.google.gson.JsonElement");
-			Metrics metrics = new Metrics(this, 8662);
-		} catch( ClassNotFoundException e ) {
-			// Do nothing
-		}
+		Metrics metrics = new Metrics(this, 8662);
 	}
 
 	@EventHandler
