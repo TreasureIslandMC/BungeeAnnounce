@@ -1,5 +1,8 @@
 package fr.royalpha.bungeeannounce.command;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Default;
 import fr.royalpha.bungeeannounce.BungeeAnnouncePlugin;
 import fr.royalpha.bungeeannounce.manager.ConfigManager;
 import fr.royalpha.bungeeannounce.manager.MsgManager;
@@ -12,15 +15,37 @@ import net.md_5.bungee.api.plugin.Command;
 /**
  * @author Royalpha
  */
-public class ReplyCommand extends Command {
+public class ReplyCommand extends BaseCommand {
 
-	private MsgManager msgManager;
+	private final MsgManager msgManager;
 
 	public ReplyCommand(MsgManager msgManager) {
-		super("reply", "", "r", "bungee:reply");
 		this.msgManager = msgManager;
 	}
 
+	@CommandAlias("reply|r|bungee:reply")
+	@Default
+	public void onReply(final ProxiedPlayer player, final String... message) {
+		if (!this.msgManager.hasReplier(player)) {
+			player.sendMessage(new TextComponent(ChatColor.RED + "You don't have any player to reply."));
+			return;
+		}
+
+		if (!this.msgManager.isReplierOnline(player)) {
+			player.sendMessage(new TextComponent(ConfigManager.Field.PM_PLAYER_NOT_ONLINE.getString().replaceAll("%PLAYER%", this.msgManager.getReplierName(player))));
+			return;
+		}
+
+
+		ProxiedPlayer to = this.msgManager.getReplier(player);
+		StringBuilder msgBuilder = new StringBuilder();
+		for (final String arg : message) msgBuilder.append(arg).append(" ");
+		if (msgBuilder.toString().trim().equals(""))
+			return;
+		this.msgManager.message(player, to, msgBuilder.toString());
+	}
+
+	@Deprecated
 	public void execute(CommandSender sender, String[] args) {
 		if (sender instanceof ProxiedPlayer) {
 			ProxiedPlayer player = (ProxiedPlayer) sender;

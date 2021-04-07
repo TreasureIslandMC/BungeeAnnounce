@@ -10,11 +10,11 @@ import net.md_5.bungee.api.plugin.Command;
 /**
  * @author Royalpha
  */
-public class BAReloadCommand extends Command {
+public class BungeeAnnounceReloadCommand extends Command {
 
 	private BungeeAnnouncePlugin plugin;
 
-	public BAReloadCommand(BungeeAnnouncePlugin plugin) {
+	public BungeeAnnounceReloadCommand(BungeeAnnouncePlugin plugin) {
 		super("ba:reload", "bungeecord.command.reload", "bungee:reload");
 		this.plugin = plugin;
 	}

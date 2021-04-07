@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import fr.royalpha.bungeeannounce.command.BAReloadCommand;
+import co.aikar.commands.BungeeCommandManager;
+import fr.royalpha.bungeeannounce.command.BungeeAnnounceReloadCommand;
 import fr.royalpha.bungeeannounce.command.ColorcodeCommand;
+import fr.royalpha.bungeeannounce.command.ReplyCommand;
+import fr.royalpha.bungeeannounce.manager.MsgManager;
 import fr.royalpha.bungeeannounce.task.ScheduledAnnouncement;
 import fr.royalpha.bungeeannounce.command.ForceBroadcastCommand;
-import fr.royalpha.bungeeannounce.command.MsgCommand;
+import fr.royalpha.bungeeannounce.command.MessageCommand;
 import fr.royalpha.bungeeannounce.handler.Logger;
 import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer;
 import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer.ConnectionType;
@@ -35,17 +38,21 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	private Boolean update;
 	private ConfigManager configManager;
 	private List<ScheduledAnnouncement> scheduledAnnouncement;
+	private MsgManager msgManager;
 	
 	public BungeeAnnouncePlugin() {
 		this.update = false;
 		this.scheduledAnnouncement = new ArrayList<>();
 	}
 
+	public MsgManager getMsgManager() {
+		return msgManager;
+	}
 
 	@Override
 	public void onEnable() {
 		instance = this;
-		
+		msgManager = new MsgManager();
 		loadConfigFile();
 		initializeLogSystem();
 		loadConfigContent();
@@ -76,7 +83,7 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 		this.configManager.loadAutoPlayerAnnouncement();
 		
 		if (ConfigManager.Field.ENABLE_PRIVATE_MESSAGING.getBoolean())
-			getProxy().getPluginManager().registerCommand(this, new MsgCommand(this, ConfigManager.Field.COMMAND_FOR_PRIVATE_MESSAGING.getString()));
+			getProxy().getPluginManager().registerCommand(this, new MessageCommand(this, ConfigManager.Field.COMMAND_FOR_PRIVATE_MESSAGING.getString()));
 	}
 	private void loadConfigFile() {
 		this.configManager = new ConfigManager(this);
@@ -92,15 +99,14 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 
 	private void registerCommands(){
 		PluginManager pM = getProxy().getPluginManager();
+		BungeeCommandManager bungeeCommandManager = new BungeeCommandManager(this);
 		for (AnnouncementManager aM : AnnouncementManager.values())
 			pM.registerCommand(this, aM.getCommandClass());
-		pM.registerCommand(this, new ForceBroadcastCommand(this));
-		pM.registerCommand(this, new BAReloadCommand(this));
-		pM.registerCommand(this, new ColorcodeCommand());
-		if (ConfigManager.Field.ENABLE_PRIVATE_MESSAGING.getBoolean()) {
-			String cmmds = ConfigManager.Field.COMMAND_FOR_PRIVATE_MESSAGING.getString().replaceAll(" ,", ",").replaceAll(", ", ",");
-			pM.registerCommand(this, new MsgCommand(this, cmmds.split(",")));
-		}
+		bungeeCommandManager.registerCommand(new ForceBroadcastCommand(this));
+		bungeeCommandManager.registerCommand(new ColorcodeCommand());
+		pM.registerCommand(this, new BungeeAnnounceReloadCommand(this));
+		bungeeCommandManager.registerCommand(new MessageCommand(msgManager));
+		bungeeCommandManager.registerCommand(new ReplyCommand(msgManager));
 	}
 
 	private void registerListeners() {

@@ -204,9 +204,8 @@ public class ConfigManager {
 	}
 	
 	public enum Field {
-		
-		ENABLE_PRIVATE_MESSAGING("enable-private-message", Boolean.class, true),
-		COMMAND_FOR_PRIVATE_MESSAGING("command-for-private-message", String.class, "msg"),
+		@Deprecated ENABLE_PRIVATE_MESSAGING("enable-private-message", Boolean.class, true),
+		@Deprecated COMMAND_FOR_PRIVATE_MESSAGING("command-for-private-message", String.class, "msg"),
 		REGISTER_LOGS("enable-announcement-logs", Boolean.class, false),
 		ANNOUNCE_PREFIX("announce-prefix", String.class, ""),
 		ACTION_PREFIX("action-prefix", String.class, ""),

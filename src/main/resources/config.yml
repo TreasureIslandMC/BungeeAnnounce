@@ -11,7 +11,7 @@ warn-prefix: '&f[&4&lWARN&f] &b'
 #If true, players will be able to do /msg <player> <message> on all servers
 enable-private-message: true
 #Which command players will have to use to communicate between servers (default is set to /msg)
-command-for-private-message: msg
+#command-for-private-message: msg Deprecated, will always use /msg
 #Private messages:
 private-message-send: '&3Send to &e%RECEIVER%: &d%MESSAGE%'
 private-message-received: '&3Received from &e%SENDER%: &d%MESSAGE%'
