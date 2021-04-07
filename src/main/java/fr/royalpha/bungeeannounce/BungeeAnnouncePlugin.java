@@ -34,7 +34,7 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	
 	private static BungeeAnnouncePlugin instance;
 	private static Logger logSystem;
-	
+
 	private ConfigManager configManager;
 	private List<ScheduledAnnouncement> scheduledAnnouncement;
 	private MsgManager msgManager;
@@ -57,21 +57,10 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 
 		registerCommands();
 		registerListeners();
-		
-		//checkForUpdates();
+
 		initializeMetrics();
 	}
 	
-	@Override
-	public void onDisable() {
-		if (this.update) {
-			getLogger().info("Stay informed about what the update bring new at https://www.spigotmc.org/resources/10002/updates");
-			URLManager.update(this, URLManager.getLatestVersion(), false, URLManager.Link.GITHUB_PATH);
-		}
-	}
-
-
-
 	
 	/**
 	 * To do better, the load method should be executed in the onEnable to avoid repeating lines of code. However, since it is only used for the BAReload command, I decided to separate it from the onEnable.
