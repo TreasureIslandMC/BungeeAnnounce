@@ -5,13 +5,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import co.aikar.commands.BungeeCommandManager;
-import fr.royalpha.bungeeannounce.command.BungeeAnnounceReloadCommand;
-import fr.royalpha.bungeeannounce.command.ColorcodeCommand;
-import fr.royalpha.bungeeannounce.command.ReplyCommand;
+import fr.royalpha.bungeeannounce.command.BungeeAnnounceCommand;
 import fr.royalpha.bungeeannounce.manager.MsgManager;
 import fr.royalpha.bungeeannounce.task.ScheduledAnnouncement;
-import fr.royalpha.bungeeannounce.command.ForceBroadcastCommand;
-import fr.royalpha.bungeeannounce.command.MessageCommand;
 import fr.royalpha.bungeeannounce.handler.Logger;
 import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer;
 import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer.ConnectionType;
@@ -64,7 +60,6 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	/*
 	 * To do better, the load method should be executed in the onEnable to avoid repeating lines of code. However, since it is only used for the BAReload command, I decided to separate it from the onEnable.
 	 */
-	//^ Nah man, please don't. There is an onLoad method for this already....
 	public void load() {
 		this.configManager = new ConfigManager(this);
 		logSystem = new Logger(this);
@@ -89,11 +84,7 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 		BungeeCommandManager bungeeCommandManager = new BungeeCommandManager(this);
 		for (AnnouncementManager aM : AnnouncementManager.values())
 			pM.registerCommand(this, aM.getCommandClass());
-		bungeeCommandManager.registerCommand(new ForceBroadcastCommand(this));
-		bungeeCommandManager.registerCommand(new ColorcodeCommand());
-		pM.registerCommand(this, new BungeeAnnounceReloadCommand(this));
-		bungeeCommandManager.registerCommand(new MessageCommand(msgManager));
-		bungeeCommandManager.registerCommand(new ReplyCommand(msgManager));
+		bungeeCommandManager.registerCommand(new BungeeAnnounceCommand(this));
 	}
 
 	private void registerListeners() {
@@ -111,6 +102,13 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 		if (!autoPlayerAnnouncements.isEmpty()) {
 			for (PlayerAnnouncer playerAnnouncer : autoPlayerAnnouncements)
 				getProxy().getScheduler().schedule(this, () -> AnnouncementManager.sendToServer(playerAnnouncer.getAnnouncement(), getProxy().getConsole(), player, playerAnnouncer.getMessage(), playerAnnouncer.getBroadcastServers(), false, "", playerAnnouncer.getOptionalTitleArgs()), 500, TimeUnit.MILLISECONDS);
+		}
+
+		//autojoin
+		for(ChannelManager channel: ChannelManager.getChannels()) {
+			if(channel.isAutoJoin() && player.hasPermission(channel.getPermission())) {
+				channel.joinPlayer(player);
+			}
 		}
 	}
 	

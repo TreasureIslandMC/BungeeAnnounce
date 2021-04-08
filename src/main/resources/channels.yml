@@ -9,6 +9,7 @@ channels:
 # - Those protected by a permission and whose only players with this permission will be able to send/receive messages from this channel after having joined it.
 #   Example : 
   'ADMIN':
+    auto-join: true
     permission: channels.admin.access
     toggle-command: cadmin
     format: '&4&l%CHANNEL_NAME% &8| &f%SENDER_NAME%: %MESSAGE%'

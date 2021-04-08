@@ -27,6 +27,7 @@ public class ConfigManager {
 	private BungeeAnnouncePlugin plugin;
 	private Configuration config;
 	private Configuration channelConfig;
+	private ChannelManager channelManager;
 
 	public ConfigManager(BungeeAnnouncePlugin plugin) {
 		this.plugin = plugin;
@@ -83,7 +84,8 @@ public class ConfigManager {
 			String description = channelsSection.getString(channelName + ".description", "");
 			String onJoin = channelsSection.getString(channelName + ".on-join", "");
 			String onLeft = channelsSection.getString(channelName + ".on-quit", "");
-			new ChannelManager(this.plugin, channelName, permission, command, description, format, onJoin, onLeft);
+			boolean autoJoin = channelsSection.getBoolean(channelName+ ".auto-join", false);
+			new ChannelManager(this.plugin, channelName, permission, command, description, format, onJoin, onLeft, autoJoin); //TODO: Confusing, this is just a command.
 		}
 	}
 	
