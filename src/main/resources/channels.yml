@@ -9,6 +9,7 @@ channels:
 # - Those protected by a permission and whose only players with this permission will be able to send/receive messages from this channel after having joined it.
 #   Example : 
   'ADMIN':
+    type: JOIN #JOIN or ALWAYS_ON
     auto-join: true
     permission: channels.admin.access
     toggle-command: cadmin
@@ -22,6 +23,7 @@ channels:
 # - Those free of access which any player can join/leave by typing the command you have chosen.
 #   For example :
   'FACTION':
+    type: join
     permission: ''
     toggle-command: cfaction
     format: '&5&l%CHANNEL_NAME% &8| &f%SENDER_NAME%: %MESSAGE%'

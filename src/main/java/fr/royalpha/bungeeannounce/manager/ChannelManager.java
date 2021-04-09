@@ -27,9 +27,14 @@ public class ChannelManager {
 	private String joinMessage;
 	private String leftMessage;
 	private boolean autoJoin;
+	private ChannelType type;
 	private List<ProxiedPlayer> players;
+
+
+	//TODO: If type = join, the list of players are the ones "joined" to the channel.
+	//TODO: If type = always_on, the list of players are the ones with toggle on.
 	
-	public ChannelManager(Plugin plugin, String name, String permission, String command, String description, String format, String joinMessage, String leftMessage, boolean autoJoin) {
+	public ChannelManager(Plugin plugin, String name, String permission, String command, String description, String format, String joinMessage, String leftMessage, boolean autoJoin, ChannelType type) {
 		this.name = name;
 		this.permission = permission;
 		this.description = description;
@@ -39,6 +44,7 @@ public class ChannelManager {
 		this.command = command;
 		this.players = new ArrayList<>();
 		this.autoJoin = autoJoin;
+		this.type = type;
 		
 		if (check()) {
 			plugin.getProxy().getPluginManager().registerCommand(plugin, new ChannelCommand(this));
@@ -87,7 +93,11 @@ public class ChannelManager {
 	public boolean hasPlayer(ProxiedPlayer player) {
 		return this.players.contains(player);
 	}
-	
+
+	public ChannelType getType() {
+		return type;
+	}
+
 	public void joinPlayer(ProxiedPlayer player) {
 		players.add(player);
 		for (ProxiedPlayer channelReceiver : ProxyServer.getInstance().getPlayers())
@@ -142,5 +152,11 @@ public class ChannelManager {
 
 	public static void setTipMessage(String message) {
 		tipMessage = message;
+	}
+
+	public enum ChannelType {
+		JOIN,
+		ALWAYS_ON;
+
 	}
 }

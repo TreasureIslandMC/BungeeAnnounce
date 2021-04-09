@@ -85,7 +85,8 @@ public class ConfigManager {
 			String onJoin = channelsSection.getString(channelName + ".on-join", "");
 			String onLeft = channelsSection.getString(channelName + ".on-quit", "");
 			boolean autoJoin = channelsSection.getBoolean(channelName+ ".auto-join", false);
-			new ChannelManager(this.plugin, channelName, permission, command, description, format, onJoin, onLeft, autoJoin); //TODO: Confusing, this is just a command.
+			ChannelManager.ChannelType type = ChannelManager.ChannelType.valueOf(channelsSection.getString(channelName+".type"));
+			new ChannelManager(this.plugin, channelName, permission, command, description, format, onJoin, onLeft, autoJoin, type); //TODO: Confusing, this is just a command.
 		}
 	}
 	

@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 import co.aikar.commands.BungeeCommandManager;
 import fr.royalpha.bungeeannounce.command.BungeeAnnounceCommand;
+import fr.royalpha.bungeeannounce.command.MessageCommand;
+import fr.royalpha.bungeeannounce.command.ReplyCommand;
 import fr.royalpha.bungeeannounce.manager.MsgManager;
 import fr.royalpha.bungeeannounce.task.ScheduledAnnouncement;
 import fr.royalpha.bungeeannounce.handler.Logger;
@@ -85,6 +87,15 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 		for (AnnouncementManager aM : AnnouncementManager.values())
 			pM.registerCommand(this, aM.getCommandClass());
 		bungeeCommandManager.registerCommand(new BungeeAnnounceCommand(this));
+		bungeeCommandManager.registerCommand(new MessageCommand(this));
+		bungeeCommandManager.registerCommand(new ReplyCommand(this));
+		bungeeCommandManager.getCommandCompletions().registerAsyncCompletion("online-players", context -> {
+			final ArrayList<String> onlinePlayers = new ArrayList<>();
+			for (ProxiedPlayer player: ProxyServer.getInstance().getPlayers()) {
+				onlinePlayers.add(player.getName());
+			}
+			return onlinePlayers;
+		});
 	}
 
 	private void registerListeners() {
