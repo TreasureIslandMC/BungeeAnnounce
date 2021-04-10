@@ -16,7 +16,7 @@ enable-private-message: true
 private-message-send: '&3Send to &e%RECEIVER%: &d%MESSAGE%'
 private-message-received: '&3Received from &e%SENDER%: &d%MESSAGE%'
 private-message-player-not-online: '&c%PLAYER% is unreachable :('
-private-message-sender-equals-receiver: '&7Are you schizophrenic ? :O'
+private-message-sender-equals-receiver: '&7You cannot message yourself.'
 reply-info: '&7Use &a/reply &7to respond to &b%SENDER%'
 #
 #===========================# Logs settings #============================#
