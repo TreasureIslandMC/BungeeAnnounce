@@ -19,7 +19,7 @@ public class MessageCommand extends BaseCommand {
 
 
 	@CommandAlias("msg")
-	@CommandCompletion("@online-players @nothing")
+	@CommandCompletion("@players @nothing")
 	public void onMessage(final ProxiedPlayer sender, final String receiver, final String... message){
 		StringBuilder msgBuilder = new StringBuilder();
 		for(String msg: message)
