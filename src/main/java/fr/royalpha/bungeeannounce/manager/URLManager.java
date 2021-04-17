@@ -29,9 +29,9 @@ public class URLManager {
 		GITHUB_PATH("https://royalphax.github.io/BungeeAnnounce/auto-updater"), 
 		BUNGEE_ANNOUNCE_PATH("http://royalphax.ddns.net/home/projects/plugins/Bungee_Announce");
 
-		private String url;
+		private final String url;
 
-		private Link(String url) {
+		Link(String url) {
 			this.url = url;
 		}
 
@@ -48,7 +48,7 @@ public class URLManager {
 		String urlCopy = url;
 		String[] urlSplit = url.split("/");
 		if (localhost && (!urlSplit[2].equals("localhost"))) {
-			urlCopy = urlCopy.replaceAll(urlSplit[2].toString(), "localhost");
+			urlCopy = urlCopy.replaceAll(urlSplit[2], "localhost");
 		}
 		for (Link link : Link.values()) {
 			if (urlCopy.contains("%" + link.toString() + "%"))
@@ -67,12 +67,11 @@ public class URLManager {
 		encoding = encoding == null ? "UTF-8" : encoding;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		byte[] buf = new byte[8192];
-		int len = 0;
+		int len;
 		while ((len = in.read(buf)) != -1) {
 			baos.write(buf, 0, len);
 		}
-		String body = new String(baos.toByteArray(), encoding);
-		return body;
+		return baos.toString(encoding);
 	}
 
 	public void download(Plugin plugin, String newVersion) {
@@ -96,7 +95,7 @@ public class URLManager {
 	}
 
 	public static Boolean checkVersion(String version, Boolean localhost, Link URLPath) {
-		Boolean isUpdated = true;
+		boolean isUpdated = true;
 		String content;
 		try {
 			content = new URLManager(URLPath.getURL() + "/version.txt", localhost).read();

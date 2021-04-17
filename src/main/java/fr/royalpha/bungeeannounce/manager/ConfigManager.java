@@ -27,6 +27,7 @@ public class ConfigManager {
 	private BungeeAnnouncePlugin plugin;
 	private Configuration config;
 	private Configuration channelConfig;
+	private ChannelManager channelManager;
 
 	public ConfigManager(BungeeAnnouncePlugin plugin) {
 		this.plugin = plugin;
@@ -83,7 +84,8 @@ public class ConfigManager {
 			String description = channelsSection.getString(channelName + ".description", "");
 			String onJoin = channelsSection.getString(channelName + ".on-join", "");
 			String onLeft = channelsSection.getString(channelName + ".on-quit", "");
-			new ChannelManager(this.plugin, channelName, permission, command, description, format, onJoin, onLeft);
+			boolean autoJoin = channelsSection.getBoolean(channelName+ ".auto-join", false);
+			new ChannelManager(this.plugin, channelName, permission, command, description, format, onJoin, onLeft, autoJoin); //TODO: Confusing, this is just a command.
 		}
 	}
 	
@@ -122,7 +124,7 @@ public class ConfigManager {
 			}
 		}
 		if (i > 0)
-			getLogger().log(Level.INFO, Integer.toString(i) + " scheduled announcement" + (i > 1 ? "s" : "") + " " + (i > 1 ? "were" : "was") + " correctly loaded.");
+			getLogger().log(Level.INFO, i + " scheduled announcement" + (i > 1 ? "s" : "") + " " + (i > 1 ? "were" : "was") + " correctly loaded.");
 		return output;
 	}
 	
@@ -146,7 +148,7 @@ public class ConfigManager {
 		}
 		
 		if (i > 0) {
-			getLogger().log(Level.INFO, Integer.toString(i) + " automatic player join announcement" + (i > 1 ? "s" : "") + " " + (i > 1 ? "were" : "was") + " correctly loaded.");
+			getLogger().log(Level.INFO, i + " automatic player join announcement" + (i > 1 ? "s" : "") + " " + (i > 1 ? "were" : "was") + " correctly loaded.");
 		}
 		
 		// LEFT ANNOUNCEMENTS
@@ -158,7 +160,7 @@ public class ConfigManager {
 		}
 
 		if (i > 0) {
-			getLogger().log(Level.INFO, Integer.toString(i) + " automatic player left announcement" + (i > 1 ? "s" : "") + " " + (i > 1 ? "were" : "was") + " correctly loaded.");
+			getLogger().log(Level.INFO, i + " automatic player left announcement" + (i > 1 ? "s" : "") + " " + (i > 1 ? "were" : "was") + " correctly loaded.");
 		}
 		
 		return output;
@@ -204,9 +206,8 @@ public class ConfigManager {
 	}
 	
 	public enum Field {
-		
-		ENABLE_PRIVATE_MESSAGING("enable-private-message", Boolean.class, true),
-		COMMAND_FOR_PRIVATE_MESSAGING("command-for-private-message", String.class, "msg"),
+		@Deprecated ENABLE_PRIVATE_MESSAGING("enable-private-message", Boolean.class, true),
+		@Deprecated COMMAND_FOR_PRIVATE_MESSAGING("command-for-private-message", String.class, "msg"),
 		REGISTER_LOGS("enable-announcement-logs", Boolean.class, false),
 		ANNOUNCE_PREFIX("announce-prefix", String.class, ""),
 		ACTION_PREFIX("action-prefix", String.class, ""),
@@ -219,12 +220,12 @@ public class ConfigManager {
 		PM_SENDER_EQUALS_RECEIVER("private-message-sender-equals-receiver", String.class, "&7Are you schizophrenic ? :O"),
 		REPLY_INFO("reply-info", String.class, "&7Use &a/reply &7to respond to &b%SENDER%");
 	
-		private String configField;
-		private Class<?> type;
-		private Object def;
+		private final String configField;
+		private final Class<?> type;
+		private final Object def;
 		private Object value;
 		
-		private Field(String configField, Class<?> type, Object def) {
+		Field(String configField, Class<?> type, Object def) {
 			this.configField = configField;
 			this.type = type;
 			this.def = def;

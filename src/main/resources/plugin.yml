@@ -1,6 +1,6 @@
 main: fr.royalpha.bungeeannounce.BungeeAnnouncePlugin
 name: BungeeAnnounce
-version: 7.2
+version: ${project.version}
 author: Royalpha
 commands:
   forcebroadcast:

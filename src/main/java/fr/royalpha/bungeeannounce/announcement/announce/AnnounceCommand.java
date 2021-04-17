@@ -22,8 +22,8 @@ public class AnnounceCommand extends Command {
 			return;
 		}
 		StringBuilder announceBuilder = new StringBuilder();
-		for (int i = 0; i < args.length; i++) {
-			announceBuilder.append(args[i]).append(" ");
+		for (final String arg : args) {
+			announceBuilder.append(arg).append(" ");
 		}
 		AnnouncementManager.sendToServer(AnnouncementManager.ANNOUNCE, sender instanceof ProxiedPlayer ? (ProxiedPlayer) sender : null, announceBuilder.toString().trim(), null, true, "");
 	}

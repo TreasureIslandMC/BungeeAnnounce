@@ -1,6 +1,8 @@
 package fr.royalpha.bungeeannounce.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.regex.Matcher;
 
 import fr.royalpha.bungeeannounce.BungeeAnnouncePlugin;
 import fr.royalpha.bungeeannounce.handler.Executor;
@@ -10,6 +12,7 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Royalpha
@@ -27,8 +30,8 @@ public class BAUtils {
 
 		ArrayList<TextComponent> outputList = new ArrayList<>();
 		String[] split = used.split(" ");
-		for (int i = 0; i < split.length; i++) {
-			outputList.add(new TextComponent(split[i]));
+		for (final String s : split) {
+			outputList.add(new TextComponent(s));
 		}
 
 		TextComponent output = new TextComponent("");
@@ -45,7 +48,7 @@ public class BAUtils {
 				if (valueBuilder.toString().trim().equals("")) {
 					for (int i = 2; i < txtSplit.length; i++) {
 						if (txtSplit[i] != null) {
-							valueBuilder.append((i > 2 ? separator : "") + txtSplit[i]);
+							valueBuilder.append(i > 2 ? separator : "").append(txtSplit[i]);
 							continue;
 						}
 						break;
@@ -77,8 +80,7 @@ public class BAUtils {
 	public static String colorizz(String uncolorizedString) {
 		String[] split = uncolorizedString.split("");
 		ArrayList<String> bigSplit = new ArrayList<>();
-		for (int i = 0; i < split.length; i++)
-			bigSplit.add(split[i]);
+		Collections.addAll(bigSplit, split);
 
 		StringBuilder output = new StringBuilder();
 
@@ -110,7 +112,7 @@ public class BAUtils {
 			} else if (isWaitingForColor(color)) {
 				color.append(str);
 			} else {
-				output.append(color.toString().trim() + str);
+				output.append(color.toString().trim()).append(str);
 			}
 		}
 		return ChatColor.translateAlternateColorCodes('&', (output.toString().trim().replace("[ln]", "\n")));
@@ -239,13 +241,14 @@ public class BAUtils {
 		if (announcement == AnnouncementManager.TITLE || announcement == AnnouncementManager.SUBTITLE) {
 			String[] splittedRawType = rawType.split("_");
 			if (splittedRawType.length >= 4) {
-				Integer fadeIn, stay, fadeOut;
+				int fadeIn;
+				int stay;
+				int fadeOut;
 				try {
 					fadeIn = Integer.parseInt(splittedRawType[1]) * 20;
 					stay = Integer.parseInt(splittedRawType[2]) * 20;
 					fadeOut = Integer.parseInt(splittedRawType[3]) * 20;
-					Integer[] filledOutput = { fadeIn, stay, fadeOut };
-					return filledOutput;
+					return new Integer[]{ fadeIn, stay, fadeOut };
 				} catch (NumberFormatException e) {
 					return emptyOutput;
 				}

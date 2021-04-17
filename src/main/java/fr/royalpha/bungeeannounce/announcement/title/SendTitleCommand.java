@@ -21,7 +21,9 @@ public class SendTitleCommand extends Command {
 			sender.sendMessage(new TextComponent(ChatColor.RED + "Usage: /sendtitle <fadeIn> <stay> <fadeOut> <title>"));
 			return;
 		}
-		Integer fadeIn, stay, fadeOut;
+		int fadeIn;
+		int stay;
+		int fadeOut;
 		try {
 		    fadeIn = Integer.parseInt(args[0])*20;
 		    stay = Integer.parseInt(args[1])*20;

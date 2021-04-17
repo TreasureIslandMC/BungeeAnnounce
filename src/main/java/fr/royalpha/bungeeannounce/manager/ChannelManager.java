@@ -26,9 +26,10 @@ public class ChannelManager {
 	private String format;
 	private String joinMessage;
 	private String leftMessage;
+	private boolean autoJoin;
 	private List<ProxiedPlayer> players;
 	
-	public ChannelManager(Plugin plugin, String name, String permission, String command, String description, String format, String joinMessage, String leftMessage) {
+	public ChannelManager(Plugin plugin, String name, String permission, String command, String description, String format, String joinMessage, String leftMessage, boolean autoJoin) {
 		this.name = name;
 		this.permission = permission;
 		this.description = description;
@@ -37,11 +38,12 @@ public class ChannelManager {
 		this.format = format;
 		this.command = command;
 		this.players = new ArrayList<>();
+		this.autoJoin = autoJoin;
 		
 		if (check()) {
 			plugin.getProxy().getPluginManager().registerCommand(plugin, new ChannelCommand(this));
 			channels.add(this);
-			plugin.getLogger().info("Channel \"" + this.name + "\" successfully registred !");
+			plugin.getLogger().info("Channel \"" + this.name + "\" successfully registered !");
 		} else {
 			plugin.getLogger().info("You can't register the channel \"" + name + "\" because there is already one with the same name or command.");
 		}
@@ -133,7 +135,11 @@ public class ChannelManager {
 	public static List<ChannelManager> getChannels() {
 		return channels;
 	}
-	
+
+	public boolean isAutoJoin() {
+		return autoJoin;
+	}
+
 	public static void setTipMessage(String message) {
 		tipMessage = message;
 	}

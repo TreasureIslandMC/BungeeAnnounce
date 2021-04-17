@@ -16,7 +16,7 @@ import net.md_5.bungee.api.plugin.Plugin;
  */
 public class ExceptionManager {
 	
-	private Throwable throwable;
+	private final Throwable throwable;
 
 	public ExceptionManager(java.lang.Exception ex) {
 		this.throwable = ex;

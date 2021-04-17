@@ -22,8 +22,8 @@ public class SendActionCommand extends Command {
 			return;
 		}
 		StringBuilder actionBuilder = new StringBuilder();
-		for (int i = 0; i < args.length; i++) {
-			actionBuilder.append(args[i]).append(" ");
+		for (final String arg : args) {
+			actionBuilder.append(arg).append(" ");
 		}
 		AnnouncementManager.sendToServer(AnnouncementManager.ACTION, sender instanceof ProxiedPlayer ? (ProxiedPlayer) sender : null, actionBuilder.toString().trim(), null, true, "");
 	}
