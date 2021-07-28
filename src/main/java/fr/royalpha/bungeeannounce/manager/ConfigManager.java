@@ -1,5 +1,14 @@
 package fr.royalpha.bungeeannounce.manager;
 
+import fr.royalpha.bungeeannounce.BungeeAnnouncePlugin;
+import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer;
+import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer.ConnectionType;
+import fr.royalpha.bungeeannounce.task.ScheduledAnnouncement;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,16 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import fr.royalpha.bungeeannounce.BungeeAnnouncePlugin;
-import fr.royalpha.bungeeannounce.task.ScheduledAnnouncement;
-import fr.royalpha.bungeeannounce.util.BAUtils;
-import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer;
-import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer.ConnectionType;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.config.Configuration;
-import net.md_5.bungee.config.ConfigurationProvider;
-import net.md_5.bungee.config.YamlConfiguration;
 
 /**
  * @author Royalpha
@@ -74,12 +73,11 @@ public class ConfigManager {
 				String permission = schedulerSection.getString(taskName + ".permission", "");
 				int delay = schedulerSection.getInt(taskName + ".delay", 5);
 				int interval = schedulerSection.getInt(taskName + ".interval", 10);
-				Integer[] optionalTitleArgs = BAUtils.getOptionalTitleArgsFromConfig(announcement, type);
 			
 				if (interval < 0) {
 					getLogger().info("The scheduled announcement \"" + taskName + "\" has a negative interval. So it was frozen. In other words, the only way to broadcast it is to use the command: /forceBroadcast " + taskName);
 				} else {
-					output.add(new ScheduledAnnouncement(this.plugin, announcement, message, servers, permission, delay, interval, optionalTitleArgs));
+					output.add(new ScheduledAnnouncement(this.plugin, announcement, message, servers, permission, delay, interval));
 				}
 				i++;
 				
@@ -155,9 +153,8 @@ public class ConfigManager {
 					requiredServers.add("all");
 				}
 				String permission = playerAnnouncerSection.getString(playerName + ".permission", "");
-				Integer[] optionalTitleArgs = BAUtils.getOptionalTitleArgsFromConfig(announcement, type);
 				
-				output.add(new PlayerAnnouncer(this.plugin, announceType, playerName, announcement, message, requiredServers, broadcastServers, permission, optionalTitleArgs));
+				output.add(new PlayerAnnouncer(this.plugin, announceType, playerName, announcement, message, requiredServers, broadcastServers, permission));
 			} catch (Exception ex) {
 				getLogger().warning("Error when loading automatic player announcement \"" + playerName + "\" in config.yml");
 				new ExceptionManager(ex).register(this.plugin, true);
@@ -207,7 +204,7 @@ public class ConfigManager {
 		public String getString() {
 			return (String) this.value;
 		}
-		
+
 		public Object getDefault() {
 			return this.def;
 		}

@@ -1,31 +1,30 @@
 package fr.royalpha.bungeeannounce;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import co.aikar.commands.BungeeCommandManager;
 import fr.royalpha.bungeeannounce.command.BungeeAnnounceCommand;
-import fr.royalpha.bungeeannounce.manager.MsgManager;
-import fr.royalpha.bungeeannounce.task.ScheduledAnnouncement;
 import fr.royalpha.bungeeannounce.handler.Logger;
 import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer;
 import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer.ConnectionType;
 import fr.royalpha.bungeeannounce.manager.AnnouncementManager;
 import fr.royalpha.bungeeannounce.manager.ConfigManager;
+import fr.royalpha.bungeeannounce.manager.MsgManager;
+import fr.royalpha.bungeeannounce.task.ScheduledAnnouncement;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.event.EventHandler;
 import org.bstats.bungeecord.Metrics;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Royalpha
  */
 public class BungeeAnnouncePlugin extends Plugin implements Listener {
-	
+
 	private static BungeeAnnouncePlugin instance;
 	private static Logger logSystem;
 
@@ -55,7 +54,7 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 		initializeMetrics();
 	}
 
-	
+
 	/*
 	 * To do better, the load method should be executed in the onEnable to avoid repeating lines of code. However, since it is only used for the BAReload command, I decided to separate it from the onEnable.
 	 */
@@ -119,7 +118,7 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	public ConfigManager getConfigManager() {
 		return this.configManager;
 	}
-	
+
 	public static ProxyServer getProxyServer() {
 		return instance.getProxy();
 	}

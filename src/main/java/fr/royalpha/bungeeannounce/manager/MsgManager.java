@@ -27,8 +27,6 @@ public class MsgManager {
 		to.sendMessage(new TextComponent(toFormat));
 		if (to == from)
 			from.sendMessage(new TextComponent(ConfigManager.Field.PM_SENDER_EQUALS_RECEIVER.getString()));
-		//if (!map.containsKey(to.getName()))
-		//	AnnouncementManager.sendToPlayer(AnnouncementManager.ACTION, null, to, ConfigManager.Field.REPLY_INFO.getString().replaceAll("%SENDER%", from.getName()), false);
 		if (hasReplier(to))
 			map.remove(to.getName());
 		map.put(to.getName(), from.getName());
