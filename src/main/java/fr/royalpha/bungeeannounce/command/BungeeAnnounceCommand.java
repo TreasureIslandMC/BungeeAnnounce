@@ -60,7 +60,6 @@ public class BungeeAnnounceCommand extends BaseCommand {
 			String message = schedulerSection.getString(taskName + ".message", "<No message was set for this announcement>");
 			List<String> servers = schedulerSection.getStringList(taskName + ".servers");
 			String permission = schedulerSection.getString(taskName + ".permission", "");
-			Integer[] optionalTitleArgs = BAUtils.getOptionalTitleArgsFromConfig(announcement, type);
 
 			List<ServerInfo> serversInfo = new ArrayList<>();
 			for (String entry : servers) {
@@ -78,7 +77,7 @@ public class BungeeAnnounceCommand extends BaseCommand {
 				}
 			}
 
-			AnnouncementManager.sendToServer(announcement, sender, message, serversInfo, false, permission, optionalTitleArgs);
+			AnnouncementManager.sendToServer(announcement, sender, message, serversInfo, false, permission);
 
 		} catch (Exception ex) {
 			sender.sendMessage(new TextComponent(BAUtils.colorizz("&cAn error occured ! There is no announcement named \"" + taskName + "\" in the config file.")));
