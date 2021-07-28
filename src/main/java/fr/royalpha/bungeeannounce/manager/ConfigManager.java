@@ -23,11 +23,8 @@ import net.md_5.bungee.config.YamlConfiguration;
  * @author Royalpha
  */
 public class ConfigManager {
-	
 	private BungeeAnnouncePlugin plugin;
 	private Configuration config;
-	private Configuration channelConfig;
-	private ChannelManager channelManager;
 
 	public ConfigManager(BungeeAnnouncePlugin plugin) {
 		this.plugin = plugin;
@@ -52,42 +49,10 @@ public class ConfigManager {
 		} catch (IOException e) {
 			new ExceptionManager(e).register(plugin, true);
 		}
-		// Channel config file
-		File channelsFile = new File(plugin.getDataFolder(), "channels.yml");
-		if (!channelsFile.exists()) {
-			try (InputStream in = plugin.getResourceAsStream("channels.yml")) {
-				Files.copy(in, channelsFile.toPath());
-			} catch (IOException e) {
-				new ExceptionManager(e).register(plugin, true);
-				getLogger().warning("Error when generating channels configuration file !");
-			} finally {
-				getLogger().info("Channels configuration file was generated with success !");
-			}
-		}
-		try {
-			this.channelConfig = ConfigurationProvider.getProvider(YamlConfiguration.class).load(channelsFile);
-		} catch (IOException e) {
-			new ExceptionManager(e).register(plugin, true);
-		}
+
 		Field.init(this.config);
 	}
-	
-	public void loadChannels() {
-		if (!this.channelConfig.getBoolean("enable-channels"))
-			return;
-		ChannelManager.setTipMessage(this.channelConfig.getString("multi-channels-tip"));
-		Configuration channelsSection = this.channelConfig.getSection("channels");
-		for (String channelName : channelsSection.getKeys()) {
-			String permission = channelsSection.getString(channelName + ".permission", "");
-			String command = channelsSection.getString(channelName + ".toggle-command", "");
-			String format = channelsSection.getString(channelName + ".format", "");
-			String description = channelsSection.getString(channelName + ".description", "");
-			String onJoin = channelsSection.getString(channelName + ".on-join", "");
-			String onLeft = channelsSection.getString(channelName + ".on-quit", "");
-			boolean autoJoin = channelsSection.getBoolean(channelName+ ".auto-join", false);
-			new ChannelManager(this.plugin, channelName, permission, command, description, format, onJoin, onLeft, autoJoin); //TODO: Confusing, this is just a command.
-		}
-	}
+
 	
 	public List<ScheduledAnnouncement> loadScheduledAnnouncement() {
 		List<ScheduledAnnouncement> output = new ArrayList<>();
