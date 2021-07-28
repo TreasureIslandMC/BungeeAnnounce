@@ -1,8 +1,6 @@
 package fr.royalpha.bungeeannounce.manager;
 
 import fr.royalpha.bungeeannounce.BungeeAnnouncePlugin;
-import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer;
-import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer.ConnectionType;
 import fr.royalpha.bungeeannounce.task.ScheduledAnnouncement;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.config.Configuration;
