@@ -78,10 +78,7 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	}
 
 	private void registerCommands(){
-		PluginManager pM = getProxy().getPluginManager();
 		BungeeCommandManager bungeeCommandManager = new BungeeCommandManager(this);
-		for (AnnouncementManager aM : AnnouncementManager.values())
-			pM.registerCommand(this, aM.getCommandClass());
 		bungeeCommandManager.registerCommand(new BungeeAnnounceCommand(this));
 	}
 

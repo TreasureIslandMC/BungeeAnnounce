@@ -18,8 +18,8 @@ public enum Executor {
 
 	SHOW_TEXT("show_text", new ShowTextExecutor());
 
-	private String s;
-	private ExecutorAction action;
+	private final String s;
+	private final ExecutorAction action;
 
 	Executor(String s, ExecutorAction action) {
 		this.s = s;

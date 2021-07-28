@@ -129,4 +129,11 @@ public class BungeeAnnounceCommand extends BaseCommand {
 		sender.sendMessage(new TextComponent("&m \u00a7mStrike\u00a7r &n \u00a7nUnderline"));
 		sender.sendMessage(new TextComponent("&o \u00a7oItalic\u00a7r &r \u00a7rReset"));
 	}
+
+	@CommandAlias("announce")
+	@Subcommand("announce")
+	@CommandPermission("bungeecord.command.announce")
+	public void onAnnounce(final CommandSender sender, final String message) {
+		AnnouncementManager.sendToServer(AnnouncementManager.ANNOUNCE, sender instanceof ProxiedPlayer ? sender : null, message.trim(), null, true, "");
+	}
 }

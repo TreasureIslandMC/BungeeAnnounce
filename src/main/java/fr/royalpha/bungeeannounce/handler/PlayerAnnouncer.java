@@ -16,14 +16,14 @@ public class PlayerAnnouncer {
 
 	public static List<PlayerAnnouncer> playerAnnouncers = new ArrayList<>();
 
-	private ConnectionType type;
-	private AnnouncementManager announcement;
-	private String message;
-	private String playerName;
-	private String permission;
-	private List<ServerInfo> requiredServers;
-	private List<ServerInfo> broadcastServers;
-	private Integer[] optionalTitleArgs;
+	private final ConnectionType type;
+	private final AnnouncementManager announcement;
+	private final String message;
+	private final String playerName;
+	private final String permission;
+	private final List<ServerInfo> requiredServers;
+	private final List<ServerInfo> broadcastServers;
+	private final Integer[] optionalTitleArgs;
 
 	public PlayerAnnouncer(BungeeAnnouncePlugin plugin, ConnectionType type, String playerName, AnnouncementManager announcement, String message, List<String> requiredServers, List<String> broadcastServers, String permission, Integer... optionalTitleArgs) {
 		this.type = type;

@@ -208,8 +208,7 @@ public class BAUtils {
 		if (sender != null) {
 			output = output.replaceAll("%SENDER_NAME%", sender.getName());
 			
-			if (sender instanceof ProxiedPlayer) {
-				ProxiedPlayer senderPlayer = (ProxiedPlayer) sender;
+			if (sender instanceof ProxiedPlayer senderPlayer) {
 				
 				output = output.replaceAll("%SENDER_DISPLAY_NAME%", senderPlayer.getDisplayName());
 				output = output.replaceAll("%SENDER_PING%", senderPlayer.getPing() + "");
@@ -236,24 +235,4 @@ public class BAUtils {
 		return output;
 	}
 
-	public static Integer[] getOptionalTitleArgsFromConfig(AnnouncementManager announcement, String rawType) {
-		Integer[] emptyOutput = {};
-		if (announcement == AnnouncementManager.TITLE || announcement == AnnouncementManager.SUBTITLE) {
-			String[] splittedRawType = rawType.split("_");
-			if (splittedRawType.length >= 4) {
-				int fadeIn;
-				int stay;
-				int fadeOut;
-				try {
-					fadeIn = Integer.parseInt(splittedRawType[1]) * 20;
-					stay = Integer.parseInt(splittedRawType[2]) * 20;
-					fadeOut = Integer.parseInt(splittedRawType[3]) * 20;
-					return new Integer[]{ fadeIn, stay, fadeOut };
-				} catch (NumberFormatException e) {
-					return emptyOutput;
-				}
-			}
-		}
-		return emptyOutput;
-	}
 }

@@ -3,43 +3,28 @@ package fr.royalpha.bungeeannounce.manager;
 import java.util.List;
 
 import fr.royalpha.bungeeannounce.BungeeAnnouncePlugin;
+import fr.royalpha.bungeeannounce.announcement.announce.GlobalAnnounceAction;
 import fr.royalpha.bungeeannounce.handler.AnnounceAction;
 import fr.royalpha.bungeeannounce.util.BAUtils;
-import fr.royalpha.bungeeannounce.announcement.action.ActionAction;
-import fr.royalpha.bungeeannounce.announcement.action.SendActionCommand;
-import fr.royalpha.bungeeannounce.announcement.announce.AnnounceCommand;
-import fr.royalpha.bungeeannounce.announcement.subtitle.SendSubtitleCommand;
-import fr.royalpha.bungeeannounce.announcement.subtitle.SubtitleAction;
-import fr.royalpha.bungeeannounce.announcement.title.SendTitleCommand;
-import fr.royalpha.bungeeannounce.announcement.title.TitleAction;
-import fr.royalpha.bungeeannounce.announcement.warn.WarnAction;
-import fr.royalpha.bungeeannounce.announcement.warn.WarnCommand;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 
 /**
  * @author Royalpha
  */
 public enum AnnouncementManager {
-	ACTION("action", ConfigManager.Field.ACTION_PREFIX, new ActionAction(), new SendActionCommand()), 
-	ANNOUNCE("announce", ConfigManager.Field.ANNOUNCE_PREFIX, new fr.royalpha.bungeeannounce.announcement.announce.AnnounceAction(), new AnnounceCommand()),
-	WARN("warn", ConfigManager.Field.WARN_PREFIX, new WarnAction(), new WarnCommand()), 
-	SUBTITLE("subtitle", ConfigManager.Field.SUBTITLE_PREFIX, new SubtitleAction(), new SendSubtitleCommand()), 
-	TITLE("title", ConfigManager.Field.TITLE_PREFIX, new TitleAction(), new SendTitleCommand());
+	ANNOUNCE("announce", ConfigManager.Field.ANNOUNCE_PREFIX, new GlobalAnnounceAction());
 
 	private final String rawType;
 	private final ConfigManager.Field prefix;
 	private final AnnounceAction action;
-	private final Command command;
 
-	AnnouncementManager(String rawType, ConfigManager.Field prefix, AnnounceAction action, Command command) {
+	AnnouncementManager(String rawType, ConfigManager.Field prefix, AnnounceAction action) {
 		this.rawType = rawType;
 		this.prefix = prefix;
 		this.action = action;
-		this.command = command;
 	}
 	
 	@Override
@@ -49,10 +34,6 @@ public enum AnnouncementManager {
 	
 	public ConfigManager.Field getFieldPrefix() {
 		return this.prefix;
-	}
-	
-	public Command getCommandClass() {
-		return this.command;
 	}
 	
 	/**
