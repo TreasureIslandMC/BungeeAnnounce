@@ -163,4 +163,6 @@ public enum AnnouncementManager {
 			announcement.send(pplayer, BAUtils.parse((prefix ? ConfigManager.Field.ANNOUNCE_PREFIX.getString() : "") + message), optionalTitleArgs);
 		}
 	}
+
+
 }

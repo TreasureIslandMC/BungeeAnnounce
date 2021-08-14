@@ -12,8 +12,8 @@ import fr.royalpha.bungeeannounce.handler.Logger;
 import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer;
 import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer.ConnectionType;
 import fr.royalpha.bungeeannounce.manager.AnnouncementManager;
-import fr.royalpha.bungeeannounce.manager.ChannelManager;
 import fr.royalpha.bungeeannounce.manager.ConfigManager;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
@@ -29,6 +29,8 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	
 	private static BungeeAnnouncePlugin instance;
 	private static Logger logSystem;
+
+	public MiniMessage miniMessage;
 
 	private ConfigManager configManager;
 	private List<ScheduledAnnouncement> scheduledAnnouncement;
@@ -46,6 +48,8 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	public void onEnable() {
 		instance = this;
 		msgManager = new MsgManager();
+		miniMessage = MiniMessage.builder().build();
+
 		loadConfigFile();
 		initializeLogSystem();
 		loadConfigContent();
@@ -76,7 +80,6 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	private void loadConfigContent() {
 		this.scheduledAnnouncement = this.configManager.loadScheduledAnnouncement();
 		this.configManager.loadAutoPlayerAnnouncement();
-		this.configManager.loadChannels();
 	}
 
 	private void registerCommands(){
@@ -104,25 +107,6 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 				getProxy().getScheduler().schedule(this, () -> AnnouncementManager.sendToServer(playerAnnouncer.getAnnouncement(), getProxy().getConsole(), player, playerAnnouncer.getMessage(), playerAnnouncer.getBroadcastServers(), false, "", playerAnnouncer.getOptionalTitleArgs()), 500, TimeUnit.MILLISECONDS);
 		}
 
-		//autojoin
-		for(ChannelManager channel: ChannelManager.getChannels()) {
-			if(channel.isAutoJoin() && player.hasPermission(channel.getPermission())) {
-				channel.joinPlayer(player);
-			}
-		}
-	}
-	
-	@EventHandler
-	public void onChat(final net.md_5.bungee.api.event.ChatEvent event) {
-		if (!event.isCommand() && event.getSender().isConnected() && event.getSender() instanceof ProxiedPlayer) {
-			final ProxiedPlayer player = (ProxiedPlayer) event.getSender();
-			final List<ChannelManager> channels = ChannelManager.getPlayerChannels(player);
-			if (channels.size() == 1) {
-				ChannelManager channel = channels.get(0);
-				channel.sendMessage(player, event.getMessage());
-				event.setCancelled(true);
-			}
-		}
 	}
 	
 	@EventHandler

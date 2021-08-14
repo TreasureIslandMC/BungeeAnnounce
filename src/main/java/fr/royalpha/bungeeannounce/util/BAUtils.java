@@ -9,9 +9,11 @@ import fr.royalpha.bungeeannounce.handler.Executor;
 import fr.royalpha.bungeeannounce.manager.AnnouncementManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.protocol.packet.Chat;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -39,7 +41,7 @@ public class BAUtils {
 		for (int nbr = 0; nbr < outputList.size(); nbr++) {
 			TextComponent in = outputList.get(nbr);
 			TextComponent out = new TextComponent("");
-			StringBuilder valueBuilder = new StringBuilder("");
+			StringBuilder valueBuilder = new StringBuilder();
 			String text = in.getText();
 			if (nbr > 0)
 				out.addExtra(" ");
@@ -115,8 +117,10 @@ public class BAUtils {
 				output.append(color.toString().trim()).append(str);
 			}
 		}
-		return ChatColor.translateAlternateColorCodes('&', (output.toString().trim().replace("[ln]", "\n")));
+
+		return ChatColor.translateAlternateColorCodes('&', output.toString().trim().replace("[ln]", "\n"));
 	}
+
 
 	private static boolean isWaitingForColor(StringBuilder builder) {
 		String[] split = builder.toString().trim().split("");
@@ -233,7 +237,7 @@ public class BAUtils {
 		}
 		
 		output = output.replaceAll("%BUNGEE_ONLINE_PLAYERS%", BungeeAnnouncePlugin.getProxyServer().getOnlineCount() + "");
-		return output;
+		return TextUtils.centerMessage(output);
 	}
 
 	public static Integer[] getOptionalTitleArgsFromConfig(AnnouncementManager announcement, String rawType) {
@@ -256,4 +260,5 @@ public class BAUtils {
 		}
 		return emptyOutput;
 	}
+
 }

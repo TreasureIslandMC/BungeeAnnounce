@@ -13,12 +13,12 @@ import net.md_5.bungee.api.config.ServerInfo;
  */
 public class ScheduledAnnouncement implements Runnable {
 
-	private BungeeAnnouncePlugin plugin;
-	private AnnouncementManager announcement;
-	private String message;
+	private final BungeeAnnouncePlugin plugin;
+	private final AnnouncementManager announcement;
+	private final String message;
 	private List<ServerInfo> servers;
-	private String permission;
-	private Integer[] optionalTitleArgs;
+	private final String permission;
+	private final Integer[] optionalTitleArgs;
 	private Boolean allServers;
 
 	public ScheduledAnnouncement(BungeeAnnouncePlugin plugin, AnnouncementManager announcement, String message, List<String> servers, String permission, int delay, int interval, Integer... optionalTitleArgs) {
@@ -33,17 +33,22 @@ public class ScheduledAnnouncement implements Runnable {
 		if (servers.isEmpty() || servers.contains("all")) {
 			this.allServers = true;
 		} else {
-			for (String entry : servers) {
-				ServerInfo info = plugin.getProxy().getServerInfo(entry);
-				if (info != null) {
-					this.servers.add(info);
-				} else {
-					plugin.getLogger().warning("Server \"" + entry + "\" for message \"" + message + "\" doesn't exist!");
-					return;
-				}
-			}
+			this.servers = addServers(servers);
 		}
 		plugin.getProxy().getScheduler().schedule(plugin, this, delay, interval, TimeUnit.SECONDS);
+	}
+
+	private List<ServerInfo> addServers(List<String> servers) {
+		List<ServerInfo> serverInfos = new ArrayList<>();
+		for (String entry : servers) {
+			ServerInfo info = plugin.getProxy().getServerInfo(entry);
+			if (info != null) {
+				serverInfos.add(info);
+			} else {
+				plugin.getLogger().warning("Server \"" + entry + "\" for message \"" + message + "\" doesn't exist!");
+			}
+		}
+		return serverInfos;
 	}
 
 	@Override
