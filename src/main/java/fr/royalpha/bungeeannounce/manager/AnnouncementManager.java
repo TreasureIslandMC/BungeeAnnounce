@@ -15,14 +15,14 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
  * @author Royalpha
  */
 public enum AnnouncementManager {
-	ANNOUNCE("announce", ConfigManager.Field.ANNOUNCE_PREFIX, new GlobalAnnounceAction());
+	ANNOUNCE(ConfigManager.Field.ANNOUNCE_PREFIX, new GlobalAnnounceAction());
 
 	private final String rawType;
 	private final ConfigManager.Field prefix;
 	private final AnnounceAction action;
 
-	AnnouncementManager(String rawType, ConfigManager.Field prefix, AnnounceAction action) {
-		this.rawType = rawType;
+	AnnouncementManager(ConfigManager.Field prefix, AnnounceAction action) {
+		this.rawType = "announce";
 		this.prefix = prefix;
 		this.action = action;
 	}
@@ -37,12 +37,12 @@ public enum AnnouncementManager {
 	}
 	
 	/**
-	 * Send any type of anouncement with a lot of possibilities by specifying all of each following parameters. 
+	 * Send any type of announcement with a lot of possibilities by specifying all of each following parameters.
 	 *
 	 * @author Royalpha
 	 * @param player The player to whom we must send the message.
 	 * @param message Message of the announcement.
-	 * @param optionalTitleArgs Optional title arguments. Put three integers and they will be used for fadeIn, stay and fadeOut values.
+	 * @param optionalTitleArgs Optional title arguments. Put three integers, and they will be used for fadeIn, stay and fadeOut values.
 	 */
 	public void send(ProxiedPlayer player, TextComponent message, Integer... optionalTitleArgs) {
 		this.action.onAction(player, message, optionalTitleArgs);
@@ -58,33 +58,33 @@ public enum AnnouncementManager {
 	}
 	
 	/**
-	 * Send any type of anouncement to a server with a lot of possibilities by specifying all of each following parameters. 
+	 * Send any type of announcement to a server with a lot of possibilities by specifying all of each following parameters.
 	 *
 	 * @author Royalpha
-	 * @param announcement The announce type (title/subtitle/warn/announce/action).
+	 * @param announcement The announcement type (title/subtitle/warn/announce/action).
 	 * @param sender The sender who's supposed to had sent this announcement. Put <b>null</b> if ignored.
 	 * @param message Message of the announcement.
 	 * @param servers Servers on which the announcement will be displayed. Put <b>null</b> if you want to display the announcement on all your bungee servers.
-	 * @param prefix Does the announcement use pre defined prefix in config.yml.
+	 * @param prefix Does the announcement use pre-defined prefix in config.yml.
 	 * @param permission Permission which is required to see this announcement. Put an empty string if ignored.
-	 * @param optionalTitleArgs Optional title arguments. Put three integers and they will be used for fadeIn, stay and fadeOut values.
+	 * @param optionalTitleArgs Optional title arguments. Put three integers, and they will be used for fadeIn, stay and fadeOut values.
 	 */
 	public static void sendToServer(AnnouncementManager announcement, CommandSender sender, String message, List<ServerInfo> servers, boolean prefix, String permission, Integer... optionalTitleArgs) {
 		sendToServer(announcement, sender, null, message, servers, prefix, permission, optionalTitleArgs);
 	}
 	
 	/**
-	 * Send any type of anouncement to a server with a lot of possibilities by specifying all of each following parameters. 
+	 * Send any type of announcement to a server with a lot of possibilities by specifying all of each following parameters.
 	 *
 	 * @author Royalpha
-	 * @param announcement The announce type (title/subtitle/warn/announce/action).
+	 * @param announcement The announcement type (title/subtitle/warn/announce/action).
 	 * @param sender The sender who's supposed to had sent this announcement. Put <b>null</b> if ignored.
 	 * @param player The player involved by the message (put null to ignore). 
 	 * @param message Message of the announcement.
 	 * @param servers Servers on which the announcement will be displayed. Put <b>null</b> if you want to display the announcement on all your bungee servers.
-	 * @param prefix Does the announcement use pre defined prefix in config.yml.
+	 * @param prefix Does the announcement use pre-defined prefix in config.yml.
 	 * @param permission Permission which is required to see this announcement. Put an empty string if ignored.
-	 * @param optionalTitleArgs Optional title arguments. Put three integers and they will be used for fadeIn, stay and fadeOut values.
+	 * @param optionalTitleArgs Optional title arguments. Put three integers, and they will be used for fadeIn, stay and fadeOut values.
 	 */
 	public static void sendToServer(AnnouncementManager announcement, CommandSender sender, ProxiedPlayer player, String message, List<ServerInfo> servers, boolean prefix, String permission, Integer... optionalTitleArgs) {
 		permission = permission.trim();
@@ -109,33 +109,33 @@ public enum AnnouncementManager {
 	}
 
 	/**
-	 * Send any type of anouncement to a player with a lot of possibilities by specifying all of each following parameters. 
+	 * Send any type of announcement to a player with a lot of possibilities by specifying all of each following parameters.
 	 *
 	 * @author Royalpha
-	 * @param announcement The announce type (title/subtitle/warn/announce/action).
+	 * @param announcement The announcement type (title/subtitle/warn/announce/action).
 	 * @param sender The sender who's supposed to had sent this announcement. Put <b>null</b> if ignored.
-	 * @param pplayer The player to whom we must send the message.
+	 * @param proxiedPlayer The player to whom we must send the message.
 	 * @param message Message of the announcement.
-	 * @param prefix Does the announcement use pre defined prefix in config.yml.
-	 * @param optionalTitleArgs Optional title arguments. Put three integers and they will be used for fadeIn, stay and fadeOut values.
+	 * @param prefix Does the announcement use pre-defined prefix in config.yml.
+	 * @param optionalTitleArgs Optional title arguments. Put three integers, and they will be used for fadeIn, stay and fadeOut values.
 	 */
-	public static void sendToPlayer(AnnouncementManager announcement, CommandSender sender, ProxiedPlayer pplayer, String message, boolean prefix, Integer... optionalTitleArgs) {
-		if (pplayer.isConnected() && pplayer.getServer() != null && pplayer.getServer().getInfo() != null) {
-			message = BAUtils.translatePlaceholders(message, sender, pplayer, null);
-			announcement.send(pplayer, BAUtils.parse((prefix ? ConfigManager.Field.ANNOUNCE_PREFIX.getString() : "") + message), optionalTitleArgs);
+	public static void sendToPlayer(AnnouncementManager announcement, CommandSender sender, ProxiedPlayer proxiedPlayer, String message, boolean prefix, Integer... optionalTitleArgs) {
+		if (proxiedPlayer.isConnected() && proxiedPlayer.getServer() != null && proxiedPlayer.getServer().getInfo() != null) {
+			message = BAUtils.translatePlaceholders(message, sender, proxiedPlayer, null);
+			announcement.send(proxiedPlayer, BAUtils.parse((prefix ? ConfigManager.Field.ANNOUNCE_PREFIX.getString() : "") + message), optionalTitleArgs);
 		}
 	}
 	
 	/**
-	 * Send any type of anouncement to a player with a lot of possibilities by specifying all of each following parameters. 
+	 * Send any type of announcement to a player with a lot of possibilities by specifying all of each following parameters.
 	 *
 	 * @author Royalpha
-	 * @param announcement The announce type (title/subtitle/warn/announce/action).
+	 * @param announcement The announcement type (title/subtitle/warn/announce/action).
 	 * @param sender The sender who's supposed to had sent this announcement. Put <b>null</b> if ignored.
 	 * @param player The player to whom we must send the message.
 	 * @param message Message of the announcement.
-	 * @param prefix Does the announcement use pre defined prefix in config.yml.
-	 * @param optionalTitleArgs Optional title arguments. Put three integers and they will be used for fadeIn, stay and fadeOut values.
+	 * @param prefix Does the announcement use pre-defined prefix in config.yml.
+	 * @param optionalTitleArgs Optional title arguments. Put three integers, and they will be used for fadeIn, stay and fadeOut values.
 	 */
 	public static void sendToPlayer(AnnouncementManager announcement, CommandSender sender, String player, String message, boolean prefix, Integer... optionalTitleArgs) {
 		ProxiedPlayer pplayer = BungeeAnnouncePlugin.getProxyServer().getPlayer(player);

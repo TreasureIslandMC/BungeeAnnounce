@@ -18,7 +18,7 @@ import net.md_5.bungee.api.CommandSender;
 public class Logger {
 
 	private File logFile;
-	private boolean registerLogs;
+	private final boolean registerLogs;
 
 	public Logger(BungeeAnnouncePlugin instance) {
 		this.registerLogs = ConfigManager.Field.REGISTER_LOGS.getBoolean();

@@ -6,7 +6,7 @@
 
     <groupId>groupId</groupId>
     <artifactId>BungeeAnnounce</artifactId>
-    <version>7.4.0-j11-TI</version>
+    <version>7.4.0-j16-TI</version>
 
     <properties>
         <java.version>16</java.version>

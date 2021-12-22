@@ -4,7 +4,6 @@ import co.aikar.commands.BungeeCommandManager;
 import fr.royalpha.bungeeannounce.command.BungeeAnnounceCommand;
 import fr.royalpha.bungeeannounce.handler.Logger;
 import fr.royalpha.bungeeannounce.manager.ConfigManager;
-import fr.royalpha.bungeeannounce.manager.MsgManager;
 import fr.royalpha.bungeeannounce.task.ScheduledAnnouncement;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Listener;
@@ -24,20 +23,15 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 
 	private ConfigManager configManager;
 	private List<ScheduledAnnouncement> scheduledAnnouncement;
-	private MsgManager msgManager;
 	
 	public BungeeAnnouncePlugin() {
 		this.scheduledAnnouncement = new ArrayList<>();
 	}
 
-	public MsgManager getMsgManager() {
-		return msgManager;
-	}
 
 	@Override
 	public void onEnable() {
 		instance = this;
-		msgManager = new MsgManager();
 		loadConfigFile();
 		initializeLogSystem();
 		loadConfigContent();
@@ -72,6 +66,7 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 
 	private void registerCommands(){
 		BungeeCommandManager bungeeCommandManager = new BungeeCommandManager(this);
+		bungeeCommandManager.enableUnstableAPI("help");
 		bungeeCommandManager.registerCommand(new BungeeAnnounceCommand(this));
 	}
 
@@ -80,7 +75,7 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	}
 
 	private void initializeMetrics() {
-		Metrics metrics = new Metrics(this, 8662);
+		new Metrics(this, 8662);
 	}
 
 	public List<ScheduledAnnouncement> getScheduledAnnouncement() {
