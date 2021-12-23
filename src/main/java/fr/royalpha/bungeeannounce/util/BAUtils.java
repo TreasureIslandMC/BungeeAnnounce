@@ -16,10 +16,10 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
  */
 public class BAUtils {
 
-	public static final String separator = "::";
+	public static final String SEPARATOR = "::";
 
 	public static TextComponent parse(String input) {
-		String used = colorizz(input);
+		String used = colorize(input);
 
 		if (!isNecessaryToParse(used))
 			return new TextComponent(used);
@@ -40,11 +40,11 @@ public class BAUtils {
 			if (nbr > 0)
 				out.addExtra(" ");
 			if (isNecessaryToParse(text)) {
-				String[] txtSplit = text.split(separator);
+				String[] txtSplit = text.split(SEPARATOR);
 				if (valueBuilder.toString().trim().equals("")) {
 					for (int i = 2; i < txtSplit.length; i++) {
 						if (txtSplit[i] != null) {
-							valueBuilder.append(i > 2 ? separator : "").append(txtSplit[i]);
+							valueBuilder.append(i > 2 ? SEPARATOR : "").append(txtSplit[i]);
 							continue;
 						}
 						break;
@@ -67,13 +67,13 @@ public class BAUtils {
 
 	private static Boolean isNecessaryToParse(String s) {
 		for (Executor exec : Executor.values()) {
-			if (s.contains(separator + exec.getString() + separator))
+			if (s.contains(SEPARATOR + exec.getString() + SEPARATOR))
 				return true;
 		}
 		return false;
 	}
 
-	public static String colorizz(String uncolorizedString) {
+	public static String colorize(String uncolorizedString) {
 		String[] split = uncolorizedString.split("");
 		ArrayList<String> bigSplit = new ArrayList<>();
 		Collections.addAll(bigSplit, split);
@@ -83,14 +83,8 @@ public class BAUtils {
 		StringBuilder color = new StringBuilder();
 		for (int i = 0; i < bigSplit.size(); i++) {
 			String str = bigSplit.get(i);
-			if (equals(separator, bigSplit, i)) {
+			if (equals(SEPARATOR, bigSplit, i)) {
 				int jump = jumpAfterNextSeparator(" ", bigSplit, i);
-				for (int j = i; j <= jump; j++)
-					output.append(bigSplit.get(j));
-				i = jump;
-				continue;
-			} else if (equals("[lang]", bigSplit, i)) {
-				int jump = jumpAfterNextSeparator("[/lang]", bigSplit, i);
 				for (int j = i; j <= jump; j++)
 					output.append(bigSplit.get(j));
 				i = jump;
@@ -146,88 +140,88 @@ public class BAUtils {
 			ProxiedPlayer player) {
 		String output = input;
 		if (receiver != null) {
-			output = output.replaceAll("%RECEIVER_NAME%", receiver.getName());
-			output = output.replaceAll("%RECEIVER_DISPLAY_NAME%", receiver.getDisplayName());
-			output = output.replaceAll("%RECEIVER_PING%", receiver.getPing() + "");
-			output = output.replaceAll("%RECEIVER_UUID%", receiver.getUniqueId().toString());
+			output = output.replace("%RECEIVER_NAME%", receiver.getName());
+			output = output.replace("%RECEIVER_DISPLAY_NAME%", receiver.getDisplayName());
+			output = output.replace("%RECEIVER_PING%", receiver.getPing() + "");
+			output = output.replace("%RECEIVER_UUID%", receiver.getUniqueId().toString());
 
 			if (receiver.getServer() != null && receiver.getServer().getInfo() != null) {
 				ServerInfo server = receiver.getServer().getInfo();
-				output = output.replaceAll("%RECEIVER_SERVER_NAME%", server.getName());
-				output = output.replaceAll("%RECEIVER_SERVER_MOTD%", server.getMotd());
-				output = output.replaceAll("%RECEIVER_SERVER_ONLINE_PLAYERS%", server.getPlayers().size() + "");
+				output = output.replace("%RECEIVER_SERVER_NAME%", server.getName());
+				output = output.replace("%RECEIVER_SERVER_MOTD%", server.getMotd());
+				output = output.replace("%RECEIVER_SERVER_ONLINE_PLAYERS%", server.getPlayers().size() + "");
 			}
 			
 			if (player == null) {
 				player = receiver;
 			}
 		} else {
-			output = output.replaceAll("%RECEIVER_NAME%", "unknown");
-			output = output.replaceAll("%RECEIVER_DISPLAY_NAME%", "unknown");
-			output = output.replaceAll("%RECEIVER_PING%", "-1");
-			output = output.replaceAll("%RECEIVER_UUID%", "unknown");
+			output = output.replace("%RECEIVER_NAME%", "unknown");
+			output = output.replace("%RECEIVER_DISPLAY_NAME%", "unknown");
+			output = output.replace("%RECEIVER_PING%", "-1");
+			output = output.replace("%RECEIVER_UUID%", "unknown");
 			
-			output = output.replaceAll("%RECEIVER_SERVER_NAME%", "unknown");
-			output = output.replaceAll("%RECEIVER_SERVER_MOTD%", "unknown");
-			output = output.replaceAll("%RECEIVER_SERVER_ONLINE_PLAYERS%", "-1");
+			output = output.replace("%RECEIVER_SERVER_NAME%", "unknown");
+			output = output.replace("%RECEIVER_SERVER_MOTD%", "unknown");
+			output = output.replace("%RECEIVER_SERVER_ONLINE_PLAYERS%", "-1");
 		}
 		
 		if (player != null) {
-			output = output.replaceAll("%PLAYER_NAME%", player.getName());
-			output = output.replaceAll("%PLAYER_DISPLAY_NAME%", player.getDisplayName());
-			output = output.replaceAll("%PLAYER_PING%", player.getPing() + "");
-			output = output.replaceAll("%PLAYER_UUID%", player.getUniqueId().toString());
+			output = output.replace("%PLAYER_NAME%", player.getName());
+			output = output.replace("%PLAYER_DISPLAY_NAME%", player.getDisplayName());
+			output = output.replace("%PLAYER_PING%", player.getPing() + "");
+			output = output.replace("%PLAYER_UUID%", player.getUniqueId().toString());
 
 			if (player.getServer() != null && player.getServer().getInfo() != null) {
 				ServerInfo server = player.getServer().getInfo();
-				output = output.replaceAll("%PLAYER_SERVER_NAME%", server.getName());
-				output = output.replaceAll("%PLAYER_SERVER_MOTD%", server.getMotd());
-				output = output.replaceAll("%PLAYER_SERVER_ONLINE_PLAYERS%", server.getPlayers().size() + "");
-				output = output.replaceAll("%SERVER_NAME%", server.getName());
-				output = output.replaceAll("%SERVER_MOTD%", server.getMotd());
-				output = output.replaceAll("%SERVER_ONLINE_PLAYERS%", server.getPlayers().size() + "");
+				output = output.replace("%PLAYER_SERVER_NAME%", server.getName());
+				output = output.replace("%PLAYER_SERVER_MOTD%", server.getMotd());
+				output = output.replace("%PLAYER_SERVER_ONLINE_PLAYERS%", server.getPlayers().size() + "");
+				output = output.replace("%SERVER_NAME%", server.getName());
+				output = output.replace("%SERVER_MOTD%", server.getMotd());
+				output = output.replace("%SERVER_ONLINE_PLAYERS%", server.getPlayers().size() + "");
 			}
 		} else {
-			output = output.replaceAll("%PLAYER_NAME%", "unknown");
-			output = output.replaceAll("%PLAYER_DISPLAY_NAME%", "unknown");
-			output = output.replaceAll("%PLAYER_PING%", "-1");
-			output = output.replaceAll("%PLAYER_UUID%", "unknown");
+			output = output.replace("%PLAYER_NAME%", "unknown");
+			output = output.replace("%PLAYER_DISPLAY_NAME%", "unknown");
+			output = output.replace("%PLAYER_PING%", "-1");
+			output = output.replace("%PLAYER_UUID%", "unknown");
 			
-			output = output.replaceAll("%PLAYER_SERVER_NAME%", "unknown");
-			output = output.replaceAll("%PLAYER_SERVER_MOTD%", "unknown");
-			output = output.replaceAll("%PLAYER_SERVER_ONLINE_PLAYERS%", "-1");
-			output = output.replaceAll("%SERVER_NAME%", "unknown");
-			output = output.replaceAll("%SERVER_MOTD%", "unknown");
-			output = output.replaceAll("%SERVER_ONLINE_PLAYERS%", "-1");
+			output = output.replace("%PLAYER_SERVER_NAME%", "unknown");
+			output = output.replace("%PLAYER_SERVER_MOTD%", "unknown");
+			output = output.replace("%PLAYER_SERVER_ONLINE_PLAYERS%", "-1");
+			output = output.replace("%SERVER_NAME%", "unknown");
+			output = output.replace("%SERVER_MOTD%", "unknown");
+			output = output.replace("%SERVER_ONLINE_PLAYERS%", "-1");
 		}
 		
 		if (sender != null) {
-			output = output.replaceAll("%SENDER_NAME%", sender.getName());
+			output = output.replace("%SENDER_NAME%", sender.getName());
 			
 			if (sender instanceof ProxiedPlayer senderPlayer) {
 				
-				output = output.replaceAll("%SENDER_DISPLAY_NAME%", senderPlayer.getDisplayName());
-				output = output.replaceAll("%SENDER_PING%", senderPlayer.getPing() + "");
-				output = output.replaceAll("%SENDER_UUID%", senderPlayer.getUniqueId().toString());
+				output = output.replace("%SENDER_DISPLAY_NAME%", senderPlayer.getDisplayName());
+				output = output.replace("%SENDER_PING%", senderPlayer.getPing() + "");
+				output = output.replace("%SENDER_UUID%", senderPlayer.getUniqueId().toString());
 
 				if (senderPlayer.getServer() != null && senderPlayer.getServer().getInfo() != null) {
 					ServerInfo server = senderPlayer.getServer().getInfo();
-					output = output.replaceAll("%SENDER_SERVER_NAME%", server.getName());
-					output = output.replaceAll("%SENDER_SERVER_MOTD%", server.getMotd());
-					output = output.replaceAll("%SENDER_SERVER_ONLINE_PLAYERS%", server.getPlayers().size() + "");
+					output = output.replace("%SENDER_SERVER_NAME%", server.getName());
+					output = output.replace("%SENDER_SERVER_MOTD%", server.getMotd());
+					output = output.replace("%SENDER_SERVER_ONLINE_PLAYERS%", server.getPlayers().size() + "");
 				}
 			} else {
-				output = output.replaceAll("%SENDER_DISPLAY_NAME%", "unknown");
-				output = output.replaceAll("%SENDER_PING%", "-1");
-				output = output.replaceAll("%SENDER_UUID%", "unknown");
+				output = output.replace("%SENDER_DISPLAY_NAME%", "unknown");
+				output = output.replace("%SENDER_PING%", "-1");
+				output = output.replace("%SENDER_UUID%", "unknown");
 				
-				output = output.replaceAll("%SENDER_SERVER_NAME%", "unknown");
-				output = output.replaceAll("%SENDER_SERVER_MOTD%", "unknown");
-				output = output.replaceAll("%SENDER_SERVER_ONLINE_PLAYERS%", "-1");
+				output = output.replace("%SENDER_SERVER_NAME%", "unknown");
+				output = output.replace("%SENDER_SERVER_MOTD%", "unknown");
+				output = output.replace("%SENDER_SERVER_ONLINE_PLAYERS%", "-1");
 			}
 		}
 		
-		output = output.replaceAll("%BUNGEE_ONLINE_PLAYERS%", BungeeAnnouncePlugin.getProxyServer().getOnlineCount() + "");
+		output = output.replace("%BUNGEE_ONLINE_PLAYERS%", BungeeAnnouncePlugin.getProxyServer().getOnlineCount() + "");
 		return output;
 	}
 

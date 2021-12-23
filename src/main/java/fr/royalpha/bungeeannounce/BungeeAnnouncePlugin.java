@@ -51,7 +51,6 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 		logSystem = new Logger(this);
 		
 		this.scheduledAnnouncement = this.configManager.loadScheduledAnnouncement();
-		this.configManager.loadAutoPlayerAnnouncement();
 	}
 	private void loadConfigFile() {
 		this.configManager = new ConfigManager(this);
@@ -61,12 +60,10 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	}
 	private void loadConfigContent() {
 		this.scheduledAnnouncement = this.configManager.loadScheduledAnnouncement();
-		this.configManager.loadAutoPlayerAnnouncement();
 	}
 
 	private void registerCommands(){
 		BungeeCommandManager bungeeCommandManager = new BungeeCommandManager(this);
-		bungeeCommandManager.enableUnstableAPI("help");
 		bungeeCommandManager.registerCommand(new BungeeAnnounceCommand(this));
 	}
 
