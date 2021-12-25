@@ -14,4 +14,10 @@ public class GlobalAnnounceAction implements AnnounceAction {
 		player.sendMessage(message);
 	}
 
+	@Override
+	public void onAction(final ProxiedPlayer player, final TextComponent[] messages, final Integer... optionalTitleArgs) {
+		for(TextComponent message: messages){
+			onAction(player,message,optionalTitleArgs);
+		}
+	}
 }

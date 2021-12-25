@@ -43,9 +43,6 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	}
 
 
-	/*
-	 * To do better, the load method should be executed in the onEnable to avoid repeating lines of code. However, since it is only used for the BAReload command, I decided to separate it from the onEnable.
-	 */
 	public void load() {
 		this.configManager = new ConfigManager(this);
 		logSystem = new Logger(this);

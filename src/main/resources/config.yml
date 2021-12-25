@@ -31,6 +31,5 @@ scheduler:
     delay: 10
     message: '&aClick &bhere::run_command::/say_hello &ato say hello !'
     type: announce
-    align: center
     servers:
       - 'all'

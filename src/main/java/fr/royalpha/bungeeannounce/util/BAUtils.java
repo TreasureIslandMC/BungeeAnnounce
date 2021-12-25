@@ -18,8 +18,15 @@ public class BAUtils {
 
 	public static final String SEPARATOR = "::";
 
+	public static TextComponent[] parse(String[] input) {
+		TextComponent[] components = new TextComponent[input.length];
+		for(int i = 0; i < components.length - 1; i++) {
+			components[i] = parse(input[i]);
+		}
+		return components;
+	}
 	public static TextComponent parse(String input) {
-		String used = colorize(input);
+		String used = BAUtils.sendCenteredMessage(colorize(input));
 
 		if (!isNecessaryToParse(used))
 			return new TextComponent(used);
@@ -106,6 +113,10 @@ public class BAUtils {
 			}
 		}
 		return ChatColor.translateAlternateColorCodes('&', (output.toString().trim().replace("[ln]", "\n")));
+	}
+
+	public static String[] splitIntoArray(final String colorizedString) {
+		return colorizedString.split("\n");
 	}
 
 	private static boolean isWaitingForColor(StringBuilder builder) {
@@ -223,6 +234,40 @@ public class BAUtils {
 		
 		output = output.replace("%BUNGEE_ONLINE_PLAYERS%", BungeeAnnouncePlugin.getProxyServer().getOnlineCount() + "");
 		return output;
+	}
+
+	private static final int CENTER_PX = 154;
+
+	public static String sendCenteredMessage(String message){
+		message = ChatColor.translateAlternateColorCodes('&', message);
+
+		int messagePxSize = 0;
+		boolean previousCode = false;
+		boolean isBold = false;
+
+		for(char c : message.toCharArray()){
+			if(c == '§'){
+				previousCode = true;
+			}else if(previousCode){
+				previousCode = false;
+				isBold = c == 'l' || c == 'L';
+			}else{
+				DefaultFontInfo dFI = DefaultFontInfo.getDefaultFontInfo(c);
+				messagePxSize += isBold ? dFI.getBoldLength() : dFI.getLength();
+				messagePxSize++;
+			}
+		}
+
+		int halvedMessageSize = messagePxSize / 2;
+		int toCompensate = CENTER_PX - halvedMessageSize;
+		int spaceLength = DefaultFontInfo.SPACE.getLength() + 1;
+		int compensated = 0;
+		StringBuilder sb = new StringBuilder();
+		while(compensated < toCompensate){
+			sb.append(" ");
+			compensated += spaceLength;
+		}
+		return sb + message;
 	}
 
 }
