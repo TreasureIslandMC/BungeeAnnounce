@@ -13,7 +13,7 @@ import net.md_5.bungee.api.plugin.Command;
 public class SendTitleCommand extends Command {
 
 	public SendTitleCommand() {
-		super("sendtitle", "bungeecord.command.sendtitle", "bungee:sendtitle");
+		super("sendtitle", "bungeeannounce.command.sendtitle", "bungee:sendtitle");
 	}
 
 	public void execute(CommandSender sender, String[] args) {
@@ -37,6 +37,6 @@ public class SendTitleCommand extends Command {
 		for (int i = 3; i < args.length; i++) {
 			titleBuilder.append(args[i]).append(" ");
 		}
-		AnnouncementManager.sendToServer(AnnouncementManager.TITLE, sender instanceof ProxiedPlayer ? (ProxiedPlayer) sender : null, titleBuilder.toString().trim(), null, true, "", fadeIn, stay, fadeOut);
+		AnnouncementManager.sendToServer(AnnouncementManager.TITLE, sender instanceof ProxiedPlayer ? sender : null, titleBuilder.toString().trim(), null, true, "", fadeIn, stay, fadeOut);
 	}
 }

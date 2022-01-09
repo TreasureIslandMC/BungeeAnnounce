@@ -13,7 +13,7 @@ import net.md_5.bungee.api.plugin.Command;
 public class WarnCommand extends Command {
 
 	public WarnCommand() {
-		super("bwarn", "bungeecord.command.warn", "bungee:warn");
+		super("bwarn", "bungeeannounce.command.warn", "bungee:warn");
 	}
 
 	public void execute(CommandSender sender, String[] args) {
@@ -25,6 +25,6 @@ public class WarnCommand extends Command {
 		for (final String arg : args) {
 			msgBuilder.append(arg).append(" ");
 		}
-		AnnouncementManager.sendToServer(AnnouncementManager.WARN, sender instanceof ProxiedPlayer ? (ProxiedPlayer) sender : null, msgBuilder.toString().trim(), null, true, "");
+		AnnouncementManager.sendToServer(AnnouncementManager.WARN, sender instanceof ProxiedPlayer ? sender : null, msgBuilder.toString().trim(), null, true, "");
 	}
 }
