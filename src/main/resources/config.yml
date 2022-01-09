@@ -17,10 +17,15 @@ private-message-send: '&3Send to &e%RECEIVER%: &d%MESSAGE%'
 private-message-received: '&3Received from &e%SENDER%: &d%MESSAGE%'
 private-message-player-not-online: '&c%PLAYER% is unreachable :('
 private-message-sender-equals-receiver: '&7Are you schizophrenic ? :O'
+private-message-toggle-on: "&6Receiving message &cenabled"
+private-message-toggle-off: "&6Receiving message &cdisabled"
+private-message-ignore-on: "&6You will no longer receive messages from &c%PLAYER%."
+private-message-ignore-off: "&6You will now receive messages from &c%PLAYER%."
+private-message-toggled: "&cThis player has turned off messages."
 reply-info: '&7Use &a/reply &7to respond to &b%SENDER%'
 #
 #===========================# Logs settings #============================#
-#Register each announcement sended by your staff team in a log (located at BungeeAnnounce/logs)
+#Register each announcement sent by your staff team in a log (located at BungeeAnnounce/logs)
 enable-announcement-logs: false
 #
 #====================# Scheduler announce settings #=====================#
@@ -63,64 +68,4 @@ scheduler:
     message: "&eOnly players with 'bungeecord.vip' permission will see this"
     type: subtitle
     servers: 
-      - 'all'
-#
-#======================# Player announcer settings #=====================#
-#You can broadcast a message when somebody important logged in or disconnect from your network.
-#To do so, you need to follow this patern:
-#  'PlayerName':
-#    permission: 'your.permission' (optional, if you want to do the same announcement for every player with permission 'your.permission')
-#    type: (announce/title/subtitle/action/warn)
-#    message: 'Message to display'
-#    required-servers:
-#      - 'server name on/from which the player should connect/disconnect to send the announcement'
-#      put « - 'all' » if you want to send the announcement when the player connects/disconnects on/from any server of your bungeecord network.
-#    broadcast-servers: 
-#      - 'server name on which the message will be displayed'
-#      put « - 'all' » if you want to display the message on all servers.
-#
-#Note: Use '[ln]' to go to the next line (works only for announce/warn).
-#A lot of placeholders are available to be used:
-#You can get them at https://github.com/Royalphax/BungeeAnnounce/wiki/Placeholders
-#
-#You can see 2 examples below (Player Royalpha and IsiZ_)
-#In the IsiZ_'s example, the field 'permission' says that all
-#players with that permission and IsiZ_ will have the following action message on join.
-#
-#You can delete/edit/copy&paste them.
-#Player announcer on join section :
-player-join-announcer:
-  'Royalpha':
-    type: subtitle
-    message: '&cThe developer is back ! <3'
-    required-servers:
-      - 'Hub-1'
-    broadcast-servers:
-      - 'Hub-1'
-  'IsiZ_':
-    permission: bungeecord.vip
-    type: action
-    message: '&a%PLAYER_NAME% &ejoined the game on lobby &a%PLAYER_SERVER_NAME%&e!'
-    required-servers:
-      - 'Lobby-1'
-      - 'Lobby-2'
-    broadcast-servers:
-      - 'all'
-#Player announcer on quit section :
-player-quit-announcer:
-  'Royalpha':
-    type: announce
-    message: '&cThe developer has left for mysterious reasons ...'
-    required-servers:
-      - 'Hub-1'
-    broadcast-servers:
-      - 'Hub-1'
-  'IsiZ_':
-    permission: bungeecord.vip
-    type: action
-    message: '&a%PLAYER_NAME% &eleft the game on lobby &a%PLAYER_SERVER_NAME%&e!'
-    required-servers:
-      - 'Lobby-1'
-      - 'Lobby-2'
-    broadcast-servers:
       - 'all'

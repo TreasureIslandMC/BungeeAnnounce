@@ -2,131 +2,129 @@ package fr.royalpha.bungeeannounce.command;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import fr.royalpha.bungeeannounce.BungeeAnnouncePlugin;
-import fr.royalpha.bungeeannounce.handler.PlayerAnnouncer;
-import fr.royalpha.bungeeannounce.manager.AnnouncementManager;
 import fr.royalpha.bungeeannounce.manager.ConfigManager;
-import fr.royalpha.bungeeannounce.util.BAUtils;
+import fr.royalpha.bungeeannounce.manager.MsgManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.config.Configuration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author sarhatabaot
  */
 @CommandAlias("ba|bungeeannounce")
 public class BungeeAnnounceCommand extends BaseCommand {
-	private final BungeeAnnouncePlugin plugin;
+    private static final String CANNOT_IGNORE = "bungeeannounce.ignore.cannot";
+    private final BungeeAnnouncePlugin plugin;
+    private final MsgManager msgManager;
 
-	public BungeeAnnounceCommand(final BungeeAnnouncePlugin plugin) {
-		this.plugin = plugin;
-	}
+    public BungeeAnnounceCommand(final BungeeAnnouncePlugin plugin) {
+        this.plugin = plugin;
+        this.msgManager = plugin.getMsgManager();
+    }
 
-	@Subcommand("reload")
-	@CommandPermission("bungee.command.reload")
-	public void onReload(final CommandSender sender){
-		this.plugin.getLogger().info(ChatColor.stripColor("\u00a77[" + sender.getName() + "]: \u00a7aReloading BungeeAnnounce plugin ..."));
-		int tasks = plugin.getProxy().getScheduler().cancel(plugin);
-		sender.sendMessage(new TextComponent(ChatColor.DARK_GRAY + "> " + ChatColor.RED + tasks + " task" + (tasks > 1 ? "s" : "") +" were cancelled."));
-		this.plugin.getScheduledAnnouncement().clear();
-		PlayerAnnouncer.playerAnnouncers.clear();
-		sender.sendMessage(new TextComponent(ChatColor.DARK_GRAY + "> " + ChatColor.YELLOW + "Loading BungeeAnnounce ..."));
-		this.plugin.load();
-		sender.sendMessage(new TextComponent(ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "BungeeAnnounce plugin is now load."));
-	}
+    @Subcommand("reload")
+    @CommandPermission("bungeeannounce.command.reload")
+    @Description("Reloads BungeeAnnounce.")
+    public void onReload(final CommandSender sender) {
+        this.plugin.getLogger().info(ChatColor.stripColor("[" + sender.getName() + "]: Reloading BungeeAnnounce plugin ..."));
+        int tasks = plugin.getProxy().getScheduler().cancel(plugin);
+        sender.sendMessage(new TextComponent(ChatColor.DARK_GRAY + "> " + ChatColor.RED + tasks + " task" + (tasks > 1 ? "s" : "") + " were cancelled."));
+        this.plugin.getScheduledAnnouncement().clear();
+        sender.sendMessage(new TextComponent(ChatColor.DARK_GRAY + "> " + ChatColor.YELLOW + "Loading BungeeAnnounce ..."));
+        this.plugin.load();
+        sender.sendMessage(new TextComponent(ChatColor.DARK_GRAY + "> " + ChatColor.GREEN + "BungeeAnnounce plugin is now loaded."));
+    }
 
-	@Subcommand("forcebroadcast|fbc")
-	@CommandPermission("bungeecord.command.forcebroadcast")
-	public void onForceBroadcast(final CommandSender sender, final String taskName) {
-		Configuration schedulerSection = this.plugin.getConfigManager().getConfig().getSection("scheduler");
-		try {
-			String type = schedulerSection.getString(taskName + ".type", "");
+    @CommandAlias("msg")
+    @Subcommand("message|msg")
+    @CommandCompletion("@players @nothing")
+    @CommandPermission("bungeeannounce.command.message")
+    @Description("Send a private message to another player.")
+    public void onMessage(final ProxiedPlayer sender, @Single final ProxiedPlayer receiver, final String... message) {
+        if (!msgManager.isToggled(sender)) {
+            sender.sendMessage(new TextComponent("You cannot send messages as you have toggled off messages."));
+        }
+        if (msgManager.isIgnored(sender, receiver)) {
+            sender.sendMessage(new TextComponent(ConfigManager.Field.PM_PLAYER_NOT_ONLINE.getString().replaceAll("%PLAYER%", plugin.getMsgManager().getReplierName(sender))));
+            return;
+        }
 
-			AnnouncementManager announcement = AnnouncementManager.getAnnouncement(type);
-			if (announcement == null) {
-				sender.sendMessage(new TextComponent(BAUtils.colorizz("&cError when loading announcement \"" + taskName + "\", the field 'type' wasn't recognized (It can also means that this announcement doesn't exist).")));
-				return;
-			}
+        if (!msgManager.isToggled(receiver)) {
+            sender.sendMessage(new TextComponent(ConfigManager.Field.MESSAGES_OFF.getString()));
+            return;
+        }
 
-			String message = schedulerSection.getString(taskName + ".message", "<No message was set for this announcement>");
-			List<String> servers = schedulerSection.getStringList(taskName + ".servers");
-			String permission = schedulerSection.getString(taskName + ".permission", "");
-			Integer[] optionalTitleArgs = BAUtils.getOptionalTitleArgsFromConfig(announcement, type);
+        msgManager.message(sender, receiver, getFinalMessage(sender, message));
+    }
 
-			List<ServerInfo> serversInfo = new ArrayList<>();
-			for (String entry : servers) {
-				if (entry.trim().equalsIgnoreCase("all")) {
-					serversInfo.clear();
-					break;
-				} else {
-					ServerInfo info = plugin.getProxy().getServerInfo(entry);
-					if (info != null) {
-						serversInfo.add(info);
-					} else {
-						sender.sendMessage(new TextComponent(BAUtils.colorizz("&eServer \"" + entry
-								+ "\" for announcement \"" + taskName + "\" doesn't exist ! Skipping it ...")));
-					}
-				}
-			}
+    private String getFinalMessage(final ProxiedPlayer sender, final String... message) {
+        StringBuilder msgBuilder = new StringBuilder();
+        for (String msg : message)
+            msgBuilder.append(msg).append(" ");
+        if (msgBuilder.toString().trim().equals(""))
+            return "";
+        if (sender.hasPermission("bungeeannounce.colors"))
+            return ChatColor.translateAlternateColorCodes('&', msgBuilder.toString());
 
-			AnnouncementManager.sendToServer(announcement, sender, message, serversInfo, false, permission, optionalTitleArgs);
+        return msgBuilder.toString();
+    }
 
-		} catch (Exception ex) {
-			sender.sendMessage(new TextComponent(BAUtils.colorizz("&cAn error occured ! There is no announcement named \"" + taskName + "\" in the config file.")));
-		}
-	}
+    @CommandAlias("r|reply")
+    @Subcommand("r|reply")
+    @CommandPermission("bungeeannounce.command.reply")
+    @Description("Reply to a private message.")
+    public void onReply(final ProxiedPlayer sender, final String... message) {
+        if (!msgManager.hasReplier(sender)) {
+            sender.sendMessage(new TextComponent(ChatColor.RED + "You don't have any player to reply."));
+            return;
+        }
 
-	@CommandAlias("msg|bungee:msg")
-	public void onMessage(final ProxiedPlayer sender, final ProxiedPlayer receiver, final String... message){
-		StringBuilder msgBuilder = new StringBuilder();
-		for(String msg: message)
-			msgBuilder.append(msg).append(" ");
-		if (msgBuilder.toString().trim().equals(""))
-			return;
-		plugin.getMsgManager().message(sender, receiver, msgBuilder.toString());
-	}
+        if (!msgManager.isReplierOnline(sender)) {
+            sender.sendMessage(new TextComponent(ConfigManager.Field.PM_PLAYER_NOT_ONLINE.getString().replaceAll("%PLAYER%", plugin.getMsgManager().getReplierName(sender))));
+            return;
+        }
 
-	@CommandAlias("reply|r|bungee:reply")
-	public void onReply(final ProxiedPlayer player, final String... message) {
-		if (!plugin.getMsgManager().hasReplier(player)) {
-			player.sendMessage(new TextComponent(ChatColor.RED + "You don't have any player to reply."));
-			return;
-		}
+        final ProxiedPlayer receiver = msgManager.getReplier(sender);
+        if (msgManager.isIgnored(sender, receiver)) {
+            sender.sendMessage(new TextComponent(ConfigManager.Field.PM_PLAYER_NOT_ONLINE.getString().replaceAll("%PLAYER%", plugin.getMsgManager().getReplierName(sender))));
+            return;
+        }
 
-		if (!plugin.getMsgManager().isReplierOnline(player)) {
-			player.sendMessage(new TextComponent(ConfigManager.Field.PM_PLAYER_NOT_ONLINE.getString().replaceAll("%PLAYER%", plugin.getMsgManager().getReplierName(player))));
-			return;
-		}
+        StringBuilder msgBuilder = new StringBuilder();
+        for (final String arg : message) msgBuilder.append(arg).append(" ");
+        if (msgBuilder.toString().trim().equals(""))
+            return;
+        msgManager.message(sender, receiver, msgBuilder.toString());
+    }
+
+    @CommandAlias("msgignore")
+    @Subcommand("ignore")
+    @CommandPermission("bungeeannounce.command.ignore")
+    @CommandCompletion("@players")
+    @Description("Ignore a player.")
+    public void onIgnore(final ProxiedPlayer player, @Single final ProxiedPlayer toIgnore) {
+        if (toIgnore.hasPermission(CANNOT_IGNORE)) {
+            player.sendMessage(new TextComponent("&cYou cannot ignore this player."));
+            return;
+        }
+
+        msgManager.ignore(player, toIgnore);
+    }
+
+    @CommandAlias("msgtoggle")
+    @Subcommand("toggle")
+    @CommandPermission("bungeeannounce.command.toggle")
+    @Description("Toggle message sending. While this is off, no one can send you messages. And you can't send any messages.")
+    public void onToggle(final ProxiedPlayer player) {
+        msgManager.toggle(player);
+    }
 
 
-		ProxiedPlayer to = plugin.getMsgManager().getReplier(player);
-		StringBuilder msgBuilder = new StringBuilder();
-		for (final String arg : message) msgBuilder.append(arg).append(" ");
-		if (msgBuilder.toString().trim().equals(""))
-			return;
-		plugin.getMsgManager().message(player, to, msgBuilder.toString());
-	}
-
-	@Subcommand("colorcode|colorcodes")
-	public void onColorCode(final CommandSender sender) {
-		sender.sendMessage(new TextComponent("Minecraft Colors:"));
-		sender.sendMessage(new TextComponent("\u00a70&0  \u00a71&1  \u00a72&2  \u00a73&3"));
-		sender.sendMessage(new TextComponent("\u00a74&4  \u00a75&5  \u00a76&6  \u00a77&7"));
-		sender.sendMessage(new TextComponent("\u00a78&8  \u00a79&9  \u00a7a&a  \u00a7b&b"));
-		sender.sendMessage(new TextComponent("\u00a7c&c  \u00a7d&d  \u00a7e&e"));
-		sender.sendMessage(new TextComponent(""));
-		sender.sendMessage(new TextComponent("Minecraft formats:"));
-		sender.sendMessage(new TextComponent("&k \u00a7kmagic\u00a7r &l \u00a7lBold"));
-		sender.sendMessage(new TextComponent("&m \u00a7mStrike\u00a7r &n \u00a7nUnderline"));
-		sender.sendMessage(new TextComponent("&o \u00a7oItalic\u00a7r &r \u00a7rReset"));
-	}
 }
