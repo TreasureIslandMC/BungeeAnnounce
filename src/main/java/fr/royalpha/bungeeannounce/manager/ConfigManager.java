@@ -24,19 +24,22 @@ public class ConfigManager {
 	private final BungeeAnnouncePlugin plugin;
 	private Configuration config;
 	private Configuration ignored;
+	private Configuration toggled;
 
 	public ConfigManager(final BungeeAnnouncePlugin plugin) {
 		this.plugin = plugin;
 		if (!plugin.getDataFolder().exists())
 			plugin.getDataFolder().mkdirs();
-		final File file = new File(plugin.getDataFolder(), "config.yml");
+		final File configFile = new File(plugin.getDataFolder(), "config.yml");
 		final File ignoredFile = new File(plugin.getDataFolder(), "ignored.yml");
-
-		generateFile(file,"config.yml");
+		final File toggledFile = new File(plugin.getDataFolder(),"toggled.yml");
+		generateFile(configFile,"config.yml");
 		generateFile(ignoredFile,"ignored.yml");
+		generateFile(toggledFile,"toggled.yml");
 		try {
-			this.config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
+			this.config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
 			this.ignored = ConfigurationProvider.getProvider(YamlConfiguration.class).load(ignoredFile);
+			this.toggled = ConfigurationProvider.getProvider(YamlConfiguration.class).load(toggledFile);
 		} catch (IOException e) {
 			new ExceptionManager(e).register(plugin, true);
 		}
@@ -119,7 +122,9 @@ public class ConfigManager {
 		TOGGLE_MESSAGE_OFF("private-message-toggle-off",String.class,"&6Receiving message &cdisabled"),
 		IGNORE_PLAYER_ON("private-message-ignore-on",String.class,"&6You will no longer receive messages from &c%PLAYER%."),
 		IGNORE_PLAYER_OFF("private-message-ignore-off",String.class,"&6You will now receive messages from &c%PLAYER%."),
-		MESSAGES_OFF("private-message-toggled",String.class,"&cThis player has turned off messages.");
+		MESSAGES_OFF("private-message-toggled",String.class,"&cThis player has turned off messages."),
+		MESSAGE_IGNORED("private-message-ignored",String.class,"&cYou cannot send messages to a player you have ignored."),
+		MESSAGE_TOGGLED("private-message-self-toggle",String.class,"&6You cannot send messages as you have toggled off messages.");
 
 		private final String configField;
 		private final Class<?> type;
@@ -173,5 +178,9 @@ public class ConfigManager {
 
 	public Configuration getIgnored() {
 		return ignored;
+	}
+
+	public Configuration getToggled() {
+		return toggled;
 	}
 }

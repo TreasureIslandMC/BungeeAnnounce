@@ -6,7 +6,7 @@
 
     <groupId>fr.royalalpha</groupId>
     <artifactId>BungeeAnnounce</artifactId>
-    <version>7.5.0-j17-TI-SNAPSHOT</version>
+    <version>7.5.0-j17-TI</version>
 
     <properties>
         <java.version>17</java.version>

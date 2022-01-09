@@ -15,6 +15,7 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 import org.bstats.bungeecord.Metrics;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author Royalpha
@@ -54,6 +54,7 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 		initializeLogSystem();
 		loadConfigContent();
 		this.msgManager.loadIgnoredPlayers(this);
+		this.msgManager.loadToggledPlayers(this);
 		registerCommands();
 		registerListeners();
 
@@ -63,16 +64,20 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	@Override
 	public void onDisable() {
 		final Configuration ignored = configManager.getIgnored();
-		ignored.set("ignored",prepareForSaving());
+		final Configuration toggled = configManager.getToggled();
+		toggled.set("toggled",msgManager.getPlayerToggleCache());
+		ignored.set("ignored", prepareIgnoredForSaving());
 
 		try {
 			ConfigurationProvider.getProvider(YamlConfiguration.class).save(ignored, new File(getDataFolder(), "ignored.yml"));
+			ConfigurationProvider.getProvider(YamlConfiguration.class).save(toggled,new File(getDataFolder(),"toggled.yml"));
 		} catch (IOException e){
 			getSLF4JLogger().error(e.getMessage());
 		}
+
 	}
 
-	private Map<String,List<String>> prepareForSaving() {
+	private @NotNull Map<String,List<String>> prepareIgnoredForSaving() {
 		Map<String,List<String>> map = new HashMap<>();
 		for(Map.Entry<UUID,List<UUID>> entry:msgManager.getPlayerIgnoreCache().entrySet()) {
 			map.put(entry.getKey().toString(),entry.getValue().stream().map(UUID::toString).toList());

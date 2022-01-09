@@ -55,7 +55,7 @@ public class BungeeAnnounceCommand extends BaseCommand {
     @Description("Send a private message to another player.")
     public void onMessage(final ProxiedPlayer sender, @Single final String name, final String... message) {
         if (!msgManager.isToggled(sender)) {
-            sender.sendMessage(new TextComponent(ChatColor.GOLD + "You cannot send messages as you have toggled off messages."));
+            sender.sendMessage(new TextComponent(ConfigManager.Field.MESSAGE_TOGGLED.getString()));
             return;
         }
 
@@ -71,7 +71,7 @@ public class BungeeAnnounceCommand extends BaseCommand {
         }
 
         if(msgManager.isIgnored(receiver,sender)) {
-            sender.sendMessage(new TextComponent(ChatColor.RED+"You cannot send messages to a player you have ignored."));
+            sender.sendMessage(new TextComponent(ConfigManager.Field.MESSAGE_IGNORED.getString()));
             return;
         }
 
@@ -117,7 +117,7 @@ public class BungeeAnnounceCommand extends BaseCommand {
         }
 
         if(msgManager.isIgnored(receiver,sender)) {
-            sender.sendMessage(new TextComponent(ChatColor.RED+"You cannot send messages to a player you have ignored."));
+            sender.sendMessage(new TextComponent(ConfigManager.Field.MESSAGE_IGNORED.getString()));
             return;
         }
 
@@ -136,7 +136,7 @@ public class BungeeAnnounceCommand extends BaseCommand {
     public void onIgnore(final ProxiedPlayer player, @Single final String name) {
         final ProxiedPlayer toIgnore = ProxyServer.getInstance().getPlayer(name);
         if (toIgnore.hasPermission(CANNOT_IGNORE)) {
-            player.sendMessage(new TextComponent("&cYou cannot ignore this player."));
+            player.sendMessage(new TextComponent(ChatColor.RED + "You cannot ignore this player."));
             return;
         }
 

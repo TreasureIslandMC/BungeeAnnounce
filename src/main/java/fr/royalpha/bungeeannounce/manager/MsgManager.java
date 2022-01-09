@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
  * @author Royalpha
  */
 public class MsgManager {
-	private static final String BYPASS_IGNORE = "bungeeannounce.ignore.bypass";
 	private final Map<String, String> playerReplyCache;
 	private final Map<UUID, Boolean> playerToggleCache;
 	private final Map<UUID, List<UUID>> playerIgnoreCache;
@@ -42,6 +41,15 @@ public class MsgManager {
 			}
 			final UUID playerUuid = UUID.fromString(playerUuidString);
 			playerIgnoreCache.put(playerUuid,ignoredUuids);
+		}
+	}
+
+	public void loadToggledPlayers(final @NotNull BungeeAnnouncePlugin plugin) {
+		final Configuration toggledConfig = plugin.getConfigManager().getToggled();
+		final Configuration toggledSection = toggledConfig.getSection("toggled");
+		for(String playerUuidString: toggledSection.getKeys()) {
+			final UUID playerUuid = UUID.fromString(playerUuidString);
+			playerToggleCache.put(playerUuid,toggledSection.getBoolean(playerUuidString));
 		}
 	}
 
@@ -111,9 +119,6 @@ public class MsgManager {
 	}
 
 	public boolean isIgnored(final @NotNull ProxiedPlayer sender, final ProxiedPlayer receiver) {
-		if(sender.hasPermission(BYPASS_IGNORE))
-			return false;
-
 		try {
 			return playerIgnoreCache.get(receiver.getUniqueId()).contains(sender.getUniqueId());
 		} catch (NullPointerException e) {
@@ -127,5 +132,9 @@ public class MsgManager {
 
 	public Map<UUID, List<UUID>> getPlayerIgnoreCache() {
 		return playerIgnoreCache;
+	}
+
+	public Map<UUID, Boolean> getPlayerToggleCache() {
+		return playerToggleCache;
 	}
 }

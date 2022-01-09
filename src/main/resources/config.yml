@@ -22,6 +22,8 @@ private-message-toggle-off: "&6Receiving message &cdisabled"
 private-message-ignore-on: "&6You will no longer receive messages from &c%PLAYER%."
 private-message-ignore-off: "&6You will now receive messages from &c%PLAYER%."
 private-message-toggled: "&cThis player has turned off messages."
+private-message-ignored: "&cYou cannot send messages to a player you have ignored."
+private-message-self-toggle: "&6You cannot send messages as you have toggled off messages."
 reply-info: '&7Use &a/reply &7to respond to &b%SENDER%'
 #
 #===========================# Logs settings #============================#
