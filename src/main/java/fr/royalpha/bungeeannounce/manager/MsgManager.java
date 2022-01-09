@@ -13,6 +13,8 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Royalpha
@@ -75,18 +77,21 @@ public class MsgManager {
 		}
 	}
 	
-	public void message(final ProxiedPlayer sender, ProxiedPlayer receiver, String message) {
-		final String fromFormat = BAUtils.translatePlaceholders(ConfigManager.Field.PM_SENT.getString(), sender, receiver, sender).replaceAll("%MESSAGE%", message.trim());
-		final String toFormat = BAUtils.translatePlaceholders(ConfigManager.Field.PM_RECEIVED.getString(), sender,receiver,sender).replaceAll("%MESSAGE%", message.trim());
+	public void message(final ProxiedPlayer sender,final ProxiedPlayer receiver,final String message) {
+		final String fromFormat = BAUtils.translatePlaceholders(ConfigManager.Field.PM_SENT.getString(), sender, receiver, sender).replace("%MESSAGE%", message.trim());
+		final String toFormat = BAUtils.translatePlaceholders(ConfigManager.Field.PM_RECEIVED.getString(), sender,receiver,sender).replace("%MESSAGE%", message.trim());
 		sender.sendMessage(new TextComponent(fromFormat));
 		receiver.sendMessage(new TextComponent(toFormat));
-		if (receiver == sender)
-			sender.sendMessage(new TextComponent(ConfigManager.Field.PM_SENDER_EQUALS_RECEIVER.getString()));
+
 		if (!playerReplyCache.containsKey(receiver.getName()))
-			AnnouncementManager.sendToPlayer(AnnouncementManager.ACTION, null, receiver, ConfigManager.Field.REPLY_INFO.getString().replaceAll("%SENDER%", sender.getName()), false);
+			sendReplyUsage(sender,receiver);
 		if (hasReplier(receiver))
 			playerReplyCache.remove(receiver.getName());
 		playerReplyCache.put(receiver.getName(), sender.getName());
+	}
+
+	private void sendReplyUsage(final ProxiedPlayer sender, final ProxiedPlayer receiver) {
+		AnnouncementManager.sendToPlayer(AnnouncementManager.ACTION, null, receiver, ConfigManager.Field.REPLY_INFO.getString().replace("%SENDER%", sender.getName()), false);
 	}
 	
 	public ProxiedPlayer getReplier(ProxiedPlayer player) {
@@ -108,7 +113,24 @@ public class MsgManager {
 	public boolean isIgnored(final ProxiedPlayer sender, final ProxiedPlayer receiver) {
 		if(sender.hasPermission(BYPASS_IGNORE))
 			return false;
-		return playerIgnoreCache.get(receiver.getUniqueId()).contains(sender.getUniqueId());
+
+		try {
+			return playerIgnoreCache.get(receiver.getUniqueId()).contains(sender.getUniqueId());
+		} catch (NullPointerException e) {
+			return false;
+		}
+	}
+
+	//if sender ignored receiver, he shouldn't be able to send them messages
+	public boolean hasIgnored(final ProxiedPlayer sender, final ProxiedPlayer receiver) {
+		if(sender.hasPermission(BYPASS_IGNORE))
+			return false;
+
+		try {
+			return playerIgnoreCache.get(sender.getUniqueId()).contains(receiver.getUniqueId());
+		} catch (NullPointerException e) {
+			return false;
+		}
 	}
 
 	public boolean isToggled(final @NotNull ProxiedPlayer player) {

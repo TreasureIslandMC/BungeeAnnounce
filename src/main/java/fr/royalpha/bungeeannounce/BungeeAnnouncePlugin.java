@@ -12,8 +12,12 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 import org.bstats.bungeecord.Metrics;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,11 +45,11 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	public void onEnable() {
 		instance = this;
 		this.msgManager = new MsgManager();
-		this.msgManager.loadIgnoredPlayers(this);
+
 		loadConfigFile();
 		initializeLogSystem();
 		loadConfigContent();
-
+		this.msgManager.loadIgnoredPlayers(this);
 		registerCommands();
 		registerListeners();
 
@@ -56,6 +60,12 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	public void onDisable() {
 		final Configuration ignored = configManager.getIgnored();
 		ignored.set("ignored",msgManager.getPlayerIgnoreCache());
+
+		try {
+			ConfigurationProvider.getProvider(YamlConfiguration.class).save(ignored, new File(getDataFolder(), "ignored.yml"));
+		} catch (IOException e){
+			getSLF4JLogger().error(e.getMessage());
+		}
 	}
 
 	/*
@@ -109,8 +119,8 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 		return logSystem;
 	}
 
-
 	public static BungeeAnnouncePlugin instance() {
 		return instance;
 	}
+
 }
