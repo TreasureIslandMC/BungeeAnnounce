@@ -13,12 +13,12 @@ import net.md_5.bungee.api.config.ServerInfo;
  */
 public class ScheduledAnnouncement implements Runnable {
 
-	private BungeeAnnouncePlugin plugin;
-	private AnnouncementManager announcement;
-	private String message;
-	private List<ServerInfo> servers;
-	private String permission;
-	private Integer[] optionalTitleArgs;
+	private final BungeeAnnouncePlugin plugin;
+	private final AnnouncementManager announcement;
+	private final String message;
+	private final List<ServerInfo> servers;
+	private final String permission;
+	private final Integer[] optionalTitleArgs;
 	private Boolean allServers;
 
 	public ScheduledAnnouncement(BungeeAnnouncePlugin plugin, AnnouncementManager announcement, String message, List<String> servers, String permission, int delay, int interval, Integer... optionalTitleArgs) {

@@ -1,9 +1,5 @@
 package fr.royalpha.bungeeannounce.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.regex.Matcher;
-
 import fr.royalpha.bungeeannounce.BungeeAnnouncePlugin;
 import fr.royalpha.bungeeannounce.handler.Executor;
 import fr.royalpha.bungeeannounce.manager.AnnouncementManager;
@@ -12,14 +8,16 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * @author Royalpha
  */
 public class BAUtils {
 
-	public static String separator = "::";
+	public static final String separator = "::";
 	public static String splittedSeparator = ":";
 
 	public static TextComponent parse(String input) {
@@ -39,7 +37,7 @@ public class BAUtils {
 		for (int nbr = 0; nbr < outputList.size(); nbr++) {
 			TextComponent in = outputList.get(nbr);
 			TextComponent out = new TextComponent("");
-			StringBuilder valueBuilder = new StringBuilder("");
+			StringBuilder valueBuilder = new StringBuilder();
 			String text = in.getText();
 			if (nbr > 0)
 				out.addExtra(" ");
@@ -208,8 +206,7 @@ public class BAUtils {
 		if (sender != null) {
 			output = output.replaceAll("%SENDER_NAME%", sender.getName());
 			
-			if (sender instanceof ProxiedPlayer) {
-				ProxiedPlayer senderPlayer = (ProxiedPlayer) sender;
+			if (sender instanceof ProxiedPlayer senderPlayer) {
 				
 				output = output.replaceAll("%SENDER_DISPLAY_NAME%", senderPlayer.getDisplayName());
 				output = output.replaceAll("%SENDER_PING%", senderPlayer.getPing() + "");

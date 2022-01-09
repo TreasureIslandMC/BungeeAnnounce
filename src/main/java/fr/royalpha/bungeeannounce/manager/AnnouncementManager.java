@@ -124,7 +124,7 @@ public enum AnnouncementManager {
 				}
 			}
 		}
-		BungeeAnnouncePlugin.getLoggerSystem().announce(announcement, sender, message);
+		BungeeAnnouncePlugin.instance().getLoggerSystem().announce(announcement, sender, message);
 	}
 
 	/**
