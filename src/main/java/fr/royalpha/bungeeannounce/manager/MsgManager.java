@@ -32,7 +32,7 @@ public class MsgManager {
 		this.playerIgnoreCache = new HashMap<>();
 	}
 
-	public void loadIgnoredPlayers(final BungeeAnnouncePlugin plugin) {
+	public void loadIgnoredPlayers(final @NotNull BungeeAnnouncePlugin plugin) {
 		final Configuration ignoredConfig = plugin.getConfigManager().getIgnored();
 		final Configuration ignoredSection = ignoredConfig.getSection("ignored");
 		for(String playerUuidString: ignoredSection.getKeys()) {
@@ -46,7 +46,7 @@ public class MsgManager {
 	}
 
 
-	public void ignore(final ProxiedPlayer player, final ProxiedPlayer toIgnore) {
+	public void ignore(final @NotNull ProxiedPlayer player, final @NotNull ProxiedPlayer toIgnore) {
 		final UUID playerUuid = player.getUniqueId();
 		final UUID ignoredUuid = toIgnore.getUniqueId();
 		playerIgnoreCache.putIfAbsent(playerUuid,new ArrayList<>());
@@ -62,7 +62,7 @@ public class MsgManager {
 		player.sendMessage(new TextComponent(ConfigManager.Field.IGNORE_PLAYER_ON.getString().replace("%PLAYER%",toIgnore.getName())));
 	}
 
-	public void toggle(final ProxiedPlayer player) {
+	public void toggle(final @NotNull ProxiedPlayer player) {
 		final UUID playerUuid = player.getUniqueId();
 
 		playerToggleCache.putIfAbsent(playerUuid, true);
@@ -77,7 +77,7 @@ public class MsgManager {
 		}
 	}
 	
-	public void message(final ProxiedPlayer sender,final ProxiedPlayer receiver,final String message) {
+	public void message(final ProxiedPlayer sender,final ProxiedPlayer receiver,final @NotNull String message) {
 		final String fromFormat = BAUtils.translatePlaceholders(ConfigManager.Field.PM_SENT.getString(), sender, receiver, sender).replace("%MESSAGE%", message.trim());
 		final String toFormat = BAUtils.translatePlaceholders(ConfigManager.Field.PM_RECEIVED.getString(), sender,receiver,sender).replace("%MESSAGE%", message.trim());
 		sender.sendMessage(new TextComponent(fromFormat));
@@ -90,19 +90,19 @@ public class MsgManager {
 		playerReplyCache.put(receiver.getName(), sender.getName());
 	}
 
-	private void sendReplyUsage(final ProxiedPlayer sender, final ProxiedPlayer receiver) {
+	private void sendReplyUsage(final @NotNull ProxiedPlayer sender, final ProxiedPlayer receiver) {
 		AnnouncementManager.sendToPlayer(AnnouncementManager.ACTION, null, receiver, ConfigManager.Field.REPLY_INFO.getString().replace("%SENDER%", sender.getName()), false);
 	}
 	
-	public ProxiedPlayer getReplier(ProxiedPlayer player) {
+	public ProxiedPlayer getReplier(@NotNull ProxiedPlayer player) {
 		return ProxyServer.getInstance().getPlayer(playerReplyCache.get(player.getName()));
 	}
 	
-	public String getReplierName(ProxiedPlayer player) {
+	public String getReplierName(@NotNull ProxiedPlayer player) {
 		return playerReplyCache.get(player.getName());
 	}
 	
-	public boolean hasReplier(ProxiedPlayer player) {
+	public boolean hasReplier(@NotNull ProxiedPlayer player) {
 		return playerReplyCache.containsKey(player.getName());
 	}
 	
@@ -110,24 +110,12 @@ public class MsgManager {
 		return (hasReplier(player) && getReplier(player) != null && getReplier(player).isConnected());
 	}
 
-	public boolean isIgnored(final ProxiedPlayer sender, final ProxiedPlayer receiver) {
+	public boolean isIgnored(final @NotNull ProxiedPlayer sender, final ProxiedPlayer receiver) {
 		if(sender.hasPermission(BYPASS_IGNORE))
 			return false;
 
 		try {
 			return playerIgnoreCache.get(receiver.getUniqueId()).contains(sender.getUniqueId());
-		} catch (NullPointerException e) {
-			return false;
-		}
-	}
-
-	//if sender ignored receiver, he shouldn't be able to send them messages
-	public boolean hasIgnored(final ProxiedPlayer sender, final ProxiedPlayer receiver) {
-		if(sender.hasPermission(BYPASS_IGNORE))
-			return false;
-
-		try {
-			return playerIgnoreCache.get(sender.getUniqueId()).contains(receiver.getUniqueId());
 		} catch (NullPointerException e) {
 			return false;
 		}

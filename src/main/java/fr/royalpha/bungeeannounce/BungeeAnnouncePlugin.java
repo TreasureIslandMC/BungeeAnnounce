@@ -19,7 +19,11 @@ import org.bstats.bungeecord.Metrics;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Royalpha
@@ -59,13 +63,22 @@ public class BungeeAnnouncePlugin extends Plugin implements Listener {
 	@Override
 	public void onDisable() {
 		final Configuration ignored = configManager.getIgnored();
-		ignored.set("ignored",msgManager.getPlayerIgnoreCache());
+		ignored.set("ignored",prepareForSaving());
 
 		try {
 			ConfigurationProvider.getProvider(YamlConfiguration.class).save(ignored, new File(getDataFolder(), "ignored.yml"));
 		} catch (IOException e){
 			getSLF4JLogger().error(e.getMessage());
 		}
+	}
+
+	private Map<String,List<String>> prepareForSaving() {
+		Map<String,List<String>> map = new HashMap<>();
+		for(Map.Entry<UUID,List<UUID>> entry:msgManager.getPlayerIgnoreCache().entrySet()) {
+			map.put(entry.getKey().toString(),entry.getValue().stream().map(UUID::toString).toList());
+		}
+
+		return map;
 	}
 
 	/*

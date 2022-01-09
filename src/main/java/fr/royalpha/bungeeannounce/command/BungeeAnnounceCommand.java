@@ -66,7 +66,7 @@ public class BungeeAnnounceCommand extends BaseCommand {
         }
 
         if (msgManager.isIgnored(sender, receiver)) {
-            sender.sendMessage(new TextComponent(ConfigManager.Field.PM_PLAYER_NOT_ONLINE.getString().replace("%PLAYER%", plugin.getMsgManager().getReplierName(sender))));
+            sender.sendMessage(new TextComponent(ConfigManager.Field.PM_PLAYER_NOT_ONLINE.getString().replace("%PLAYER%", receiver.getName())));
             return;
         }
 
