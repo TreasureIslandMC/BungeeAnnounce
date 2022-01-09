@@ -151,20 +151,4 @@ public class BungeeAnnounceCommand extends BaseCommand {
         msgManager.toggle(player);
     }
 
-
-    @Subcommand("debug")
-    @CommandPermission("bungeeannounce.command.debug")
-    public void onDebug() {
-        final Logger logger = plugin.getLogger();
-        for(Map.Entry<UUID, List<UUID>> entry: msgManager.getPlayerIgnoreCache().entrySet()) {
-            logger.info("BasePlayerUuid="+entry.getKey());
-            logger.info("[");
-            for(UUID ignored: entry.getValue()) {
-                logger.info(ignored.toString());
-            }
-            logger.info("]");
-        }
-    }
-
-
 }
