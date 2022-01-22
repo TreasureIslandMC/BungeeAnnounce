@@ -39,7 +39,7 @@ public class BungeeAnnounceCommand extends BaseCommand {
     @CommandPermission("bungeeannounce.command.reload")
     @Description("Reloads BungeeAnnounce.")
     public void onReload(final CommandSender sender) {
-        this.plugin.getLogger().info(ChatColor.stripColor("[" + sender.getName() + "]: Reloading BungeeAnnounce plugin ..."));
+        this.plugin.getLogger().info("[" + sender.getName() + "]: Reloading BungeeAnnounce plugin ...");
         int tasks = plugin.getProxy().getScheduler().cancel(plugin);
         sender.sendMessage(new TextComponent(ChatColor.DARK_GRAY + "> " + ChatColor.RED + tasks + " task" + (tasks > 1 ? "s" : "") + " were cancelled."));
         this.plugin.getScheduledAnnouncement().clear();
@@ -49,7 +49,7 @@ public class BungeeAnnounceCommand extends BaseCommand {
     }
 
     @CommandAlias("msg")
-    @Subcommand("message|msg")
+    @Subcommand("message|msg|tell|whisper|pm|dm")
     @CommandCompletion("@players")
     @CommandPermission("bungeeannounce.command.message")
     @Description("Send a private message to another player.")
@@ -128,7 +128,7 @@ public class BungeeAnnounceCommand extends BaseCommand {
         msgManager.message(sender, receiver, msgBuilder.toString());
     }
 
-    @CommandAlias("msgignore")
+    @CommandAlias("msgignore|tellignore|pmignore|whisperignore|dmignore")
     @Subcommand("ignore")
     @CommandPermission("bungeeannounce.command.ignore")
     @CommandCompletion("@players")
@@ -143,7 +143,7 @@ public class BungeeAnnounceCommand extends BaseCommand {
         msgManager.ignore(player, toIgnore);
     }
 
-    @CommandAlias("msgtoggle")
+    @CommandAlias("msgtoggle|telltoggle|pmtoggle|whispertoggle|dmtoggle")
     @Subcommand("toggle")
     @CommandPermission("bungeeannounce.command.toggle")
     @Description("Toggle message sending. While this is off, no one can send you messages. And you can't send any messages.")
